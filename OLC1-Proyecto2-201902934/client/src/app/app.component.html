@@ -1,0 +1,86 @@
+
+<h1 class="titulo">TYPESTY</h1>
+
+<!-- BARRA DE BOTONES -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarColor01">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+            <button type="button" class="btn btn-secondary" (click) = "open.click()">Open</button>
+        </li>
+        <li class="nav-item">
+            <button type="button" class="btn btn-secondary" (click)="expFile()">Save</button>
+        </li>
+        <li class="nav-item">
+            <button type="button" class="btn btn-secondary" (click)="addTab()">New Tab</button>
+        </li>
+        <li class="nav-item">
+            <button type="button" class="btn btn-secondary" (click)="deleteTab()">Close Tab</button>
+        </li>
+        <li class="nav-item">
+            <button type="button" class="btn btn-secondary">AST</button>
+        </li>
+        <li class="nav-item">
+            <button type="button" class="btn btn-secondary">Grammar</button>
+        </li>
+        <li class="nav-item">
+            <button type="button" class="btn btn-secondary">Compile</button>
+        </li>
+      </ul>
+    </div>
+</nav>
+
+<!-- PESTAÑAS -->
+<div class="tab">
+  <mat-tab-group (selectedTabChange)="findTab($event)">
+    <mat-tab *ngFor="let i of listTabs" label={{i.nombre}} >
+
+      <!-- CODEMIRROR IZQUIERDO -->
+      <div style="float: left; width: 53%">
+        <div class="card text-white bg-secondary mb-3" style="max-width: 85%;">
+          <div class="card-header">Editor</div>
+          <div class="card-body">
+            <ngx-codemirror
+              [(ngModel)] = "i.content"
+              [options]="{
+                lineNumbers: true,
+                firstLineNumber: 1,
+                theme: 'seti',
+                mode: 'javascript',
+                autoRefresh: true
+              }"
+            ></ngx-codemirror>
+          </div>
+        </div>
+      </div>
+
+      <!-- CODEMIRROR DERECHO -->
+      <div style="float: right; width: 53%">
+        <div class="card text-white bg-secondary mb-3" style="max-width: 85%;" id ="car-left">
+          <div class="card-header">Console</div>
+          <div class="card-body">
+            <ngx-codemirror
+            [(ngModel)] = "i.console"
+              [options]="{
+                lineNumbers: true,
+                firstLineNumber: 1,
+                theme: 'seti',
+                mode: 'javascript',
+                autoRefresh: true
+              }"
+            ></ngx-codemirror>
+          </div>
+        </div>
+      </div>
+
+    </mat-tab>
+  </mat-tab-group>    
+</div>
+
+<!-- FILECHOOSER -->
+<input type="file" #open (change)="openFile($event)" style="display: none"/>
