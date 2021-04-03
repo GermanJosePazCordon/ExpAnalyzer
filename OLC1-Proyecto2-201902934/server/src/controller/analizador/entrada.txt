@@ -1,0 +1,4 @@
+imprimir (2);
+imprimir (2.5);
+imprimir ("Hola");
+imprimir ("SIUUUUUU");
