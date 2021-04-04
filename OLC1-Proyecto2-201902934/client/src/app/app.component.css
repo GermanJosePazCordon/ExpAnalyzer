@@ -16,7 +16,7 @@
     position: absolute;
     margin: auto;
     font-family: 'Segoe UI';
-    color:rgb(163, 167, 167);
+    color:#d0800d;
     margin-left: 1%;
     font-size: 550%;
 }
@@ -43,7 +43,6 @@
     width: 97%;
     margin-left: 1%;
     height: 47%;
-    color: white;
     background-color:rgb(128, 128, 128);
 }
 

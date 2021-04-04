@@ -23,6 +23,7 @@ class server{
 
     routes() : void{
         this.app.use(indexroutes);
+        this.app.use('run', indexroutes);
     }
 
     start() : void{

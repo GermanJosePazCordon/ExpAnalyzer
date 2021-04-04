@@ -8,12 +8,8 @@ class indexRoutes {
         this.control();
     }
     control() {
-        this.router.get('/', controller_1.controllers.hello);
+        this.router.post('/run', controller_1.controllers.interpretar);
         this.router.get('/personal', controller_1.controllers.personal);
-        this.router.get('/test', controller_1.controllers.test);
-        this.router.get("**", (req, res) => {
-            res.send("Aqui no hay nada 🥺");
-        });
     }
 }
 const indexroutes = new indexRoutes();

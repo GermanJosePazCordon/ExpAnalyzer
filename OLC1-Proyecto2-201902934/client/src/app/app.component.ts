@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import pestaña from './pestaña';
-import { HttpClient } from '@angular/common/http';
+import pestaña from './models/pestaña';
+import { Interpretar } from './models/interpretar';
+import { AppService } from './services/app.service';
 
 @Component({
   selector: 'app-root',
@@ -10,15 +11,18 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent {
   
   title = 'client';
-  inicio = 0;
-  tab = new pestaña(this.inicio,"", "");
-  listTabs : pestaña [] = [];
-  tmp : any;
-  index : any;
-  file : File = null;
+  inicio = 0; //Contador para las pestañas
+  tab = new pestaña(this.inicio,"", ""); //Pestaña
+  listTabs : pestaña [] = []; //Lista que guarda las pestañas
+  tmp : any; //Temporal para crear una pestaña
+  index : any; //Variable que guarda el indice del tab actual
+  file : File = null; //Variable para guardar el evento del archivo a cargar
 
+  interpretar : Interpretar = {
+    entrada : ''
+  }
 
-  constructor(private http : HttpClient){
+  constructor(private compilador : AppService){
     this.listTabs.push(this.tab);
     
   }
@@ -56,50 +60,59 @@ export class AppComponent {
   }
 
   openFile(event){
+    console.log("INDEX ANTES: " + this.index);
     this.defineIndex();
+    console.log("INDEX DESPUES: " + this.index);
     this.file = <File>event.target.files[0]; 
     var reader:FileReader = new FileReader();
     var tmp : any = this.listTabs;
     var ind = this.index;
     reader.onloadend = function(e){
       console.log(reader.result);
-      tmp[ind].console = reader.result;
+      tmp[ind].content = reader.result;
     }
     reader.readAsText(this.file);
   }
 
-  saveTextAsFile (data, filename){
-
+  saveFile(data, filename){
     if(!data) {
         console.error('Console.save: No data')
         return;
     }
-
     var blob = new Blob([data], {type: 'text/plain'}),
         e    = document.createEvent('MouseEvents'),
         a    = document.createElement('a')
-    // FOR IE:
-
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
       window.navigator.msSaveOrOpenBlob(blob, filename);
     }
     else{
       var e = document.createEvent('MouseEvents'),
         a = document.createElement('a');
-
         a.download = filename;
         a.href = window.URL.createObjectURL(blob);
         a.dataset.downloadurl = ['text/plain', a.download, a.href].join(':');
         e.initEvent('click', true, false);
         a.dispatchEvent(e);
       }
-    }
+  }
 
+  exportFile() {
+    this.defineIndex();
+    this.saveFile(this.listTabs[this.index].content, "tab" + this.listTabs[this.index].nombre + ".ty");
+  }
 
-    expFile() {
-      this.defineIndex();
-      this.saveTextAsFile(this.listTabs[this.index].content, this.listTabs[this.index].nombre);
-    }
-
+  compile(){
+    this.defineIndex();
+    this.interpretar.entrada = this.listTabs[this.index].content;
+    this.compilador.compilar(this.interpretar).subscribe(
+      res=>{
+        console.log(res);
+        this.listTabs[this.index].console = res.valor;
+      },err=>{
+        console.log(err);
+        this.listTabs[this.index].console = "NO COMPILO NADA 🥺";
+      }
+    );
+  }
 
 }

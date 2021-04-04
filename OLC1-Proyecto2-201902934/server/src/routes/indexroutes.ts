@@ -10,12 +10,8 @@ class indexRoutes{
     }
 
     control() : void{
-        this.router.get('/', controllers.hello);
+        this.router.post('/run', controllers.interpretar);
         this.router.get('/personal', controllers.personal);
-        this.router.get('/test', controllers.test);
-        this.router.get("**", (req,res)=>{
-            res.send("Aqui no hay nada 🥺");
-        });
     }
 
 

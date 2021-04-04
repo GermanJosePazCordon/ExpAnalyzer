@@ -49,17 +49,17 @@ INICIO
 ;
 
 INSTRUCCIONES
-	: INSTRUCCIONES INSTRUCCION     {}
-	| INSTRUCCION                   {}
+	: INSTRUCCIONES INSTRUCCION     { $1.push($2); $$ = $1; }
+	| INSTRUCCION                   { $$ = [$1]; }
 ;
 
 INSTRUCCION
-	: DEFPRINT          {}
+	: DEFPRINT          { $$ = $1 }
 	| error PTCOMA{ console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); }
 ;
 
 DEFPRINT
-    : RIMPRIMIR PARIZQ EXPRESION PARDER PTCOMA  {console.log("[" + $3 + "]!!");}
+    : RIMPRIMIR PARIZQ EXPRESION PARDER PTCOMA  { $$ = "[" + $3 + "]!!" ; }
 ;
 
 EXPRESION

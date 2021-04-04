@@ -86,11 +86,20 @@ switch (yystate) {
 case 1:
 return $$[$0-1];
 break;
+case 2:
+ $$[$0-1].push($$[$0]); this.$ = $$[$0-1]; 
+break;
+case 3:
+ this.$ = [$$[$0]]; 
+break;
+case 4:
+ this.$ = $$[$0] 
+break;
 case 5:
  console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); 
 break;
 case 6:
-console.log("[" + $$[$0-2] + "]!!");
+ this.$ = "[" + $$[$0-2] + "]!!" ; 
 break;
 case 7: case 8: case 9:
 this.$ = $$[$0]

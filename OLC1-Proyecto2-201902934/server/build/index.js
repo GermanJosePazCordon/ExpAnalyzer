@@ -22,6 +22,7 @@ class server {
     }
     routes() {
         this.app.use(indexroutes_1.default);
+        this.app.use('run', indexroutes_1.default);
     }
     start() {
         this.app.listen(this.app.get('port'), () => {
