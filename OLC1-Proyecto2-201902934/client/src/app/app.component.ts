@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import pestaña from './models/pestaña';
+import {FormControl} from '@angular/forms';
 import { Interpretar } from './models/interpretar';
 import { AppService } from './services/app.service';
 
@@ -13,10 +14,10 @@ export class AppComponent {
   title = 'client';
   inicio = 0; //Contador para las pestañas
   tab = new pestaña(this.inicio,"", ""); //Pestaña
+  index  = new FormControl(0); //Variable que guarda el indice del tab actual
   listTabs : pestaña [] = []; //Lista que guarda las pestañas
-  tmp : any; //Temporal para crear una pestaña
-  index : any; //Variable que guarda el indice del tab actual
   file : File = null; //Variable para guardar el evento del archivo a cargar
+
 
   interpretar : Interpretar = {
     entrada : ''
@@ -31,52 +32,32 @@ export class AppComponent {
 
   addTab(){
     this.inicio = this.inicio + 1;
-    this.tmp = new pestaña(this.inicio,"", "");
-    this.listTabs.push(this.tmp);
+    var tmp = new pestaña(this.inicio,"", "");
+    this.listTabs.push(tmp);
   }
 
-  defineIndex(){
-    if(!this.index){
-      this.index = "0";
-    }
-  }
 
   deleteTab(){
-    this.defineIndex();
-    console.log(this.index)
-    if(this.listTabs.length > 1){
-      for(let i = 0; i < this.listTabs.length; i++){
-        if(this.listTabs[i].nombre == this.index){
-          console.log("lista: " + this.listTabs[i].nombre + "----- tab: " + this.index);
-          var indice = this.listTabs.indexOf(this.listTabs[i]);
-          this.listTabs.splice(indice, 1);
-        }
-      }
-    }
-  }
-
-  findTab(event){
-    this.index = event.tab.textLabel;
+    console.log("tab a eliminar: " + this.index.value);
+    this.listTabs.splice(this.index.value, 1);
   }
 
   openFile(event){
-    console.log("INDEX ANTES: " + this.index);
-    this.defineIndex();
-    console.log("INDEX DESPUES: " + this.index);
     this.file = <File>event.target.files[0]; 
     var reader:FileReader = new FileReader();
     var tmp : any = this.listTabs;
-    var ind = this.index;
+    var ind = this.index.value;
     reader.onloadend = function(e){
       console.log(reader.result);
       tmp[ind].content = reader.result;
     }
     reader.readAsText(this.file);
+    //this.file = null;
   }
 
   saveFile(data, filename){
     if(!data) {
-        console.error('Console.save: No data')
+        console.error('No hay archivo para guardar')
         return;
     }
     var blob = new Blob([data], {type: 'text/plain'}),
@@ -97,20 +78,18 @@ export class AppComponent {
   }
 
   exportFile() {
-    this.defineIndex();
-    this.saveFile(this.listTabs[this.index].content, "tab" + this.listTabs[this.index].nombre + ".ty");
+    this.saveFile(this.listTabs[this.index.value].content, "tab" + this.listTabs[this.index.value].nombre + ".ty");
   }
 
   compile(){
-    this.defineIndex();
-    this.interpretar.entrada = this.listTabs[this.index].content;
+    this.interpretar.entrada = this.listTabs[this.index.value].content;
     this.compilador.compilar(this.interpretar).subscribe(
       res=>{
         console.log(res);
-        this.listTabs[this.index].console = res.valor;
+        this.listTabs[this.index.value].console = res.valor;
       },err=>{
         console.log(err);
-        this.listTabs[this.index].console = "NO COMPILO NADA 🥺";
+        this.listTabs[this.index.value].console = "NO COMPILO NADA 🥺";
       }
     );
   }

@@ -20,7 +20,7 @@
             <button type="button" class="btn btn-secondary" (click)="addTab()">New Tab</button>
         </li>
         <li class="nav-item">
-            <button type="button" class="btn btn-secondary" (click)="deleteTab()">Close Tab</button>
+            <button type="button" class="btn btn-secondary" (click)="deleteTab()" [disabled]="listTabs.length === 1">Close Tab</button>
         </li>
         <li class="nav-item">
             <button type="button" class="btn btn-secondary">AST</button>
@@ -37,7 +37,8 @@
 
 <!-- PESTAÑAS -->
 <div class="tab">
-  <mat-tab-group (selectedTabChange)="findTab($event)">
+  <mat-tab-group [selectedIndex]="index.value"
+  (selectedIndexChange)="index.setValue($event)">
     <mat-tab *ngFor="let i of listTabs" label={{i.nombre}} >
 
       <!-- CODEMIRROR IZQUIERDO -->
@@ -50,8 +51,8 @@
               [options]="{
                 lineNumbers: true,
                 firstLineNumber: 1,
-                theme: 'seti',
-                mode: 'javascript',
+                theme: 'monokai',
+                mode: 'go',
                 autoRefresh: true
               }"
             ></ngx-codemirror>
@@ -69,9 +70,10 @@
               [options]="{
                 lineNumbers: true,
                 firstLineNumber: 1,
-                theme: 'seti',
-                mode: 'javascript',
-                autoRefresh: true
+                theme: 'monokai',
+                mode: 'go',
+                autoRefresh: true,
+                readOnly: true
               }"
             ></ngx-codemirror>
           </div>

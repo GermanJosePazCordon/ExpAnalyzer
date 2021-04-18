@@ -7,6 +7,7 @@ import { environment } from './environments/environment';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/addon/display/autorefresh';
+import 'codemirror/mode/go/go';
 
 if (environment.production) {
   enableProdMode();
