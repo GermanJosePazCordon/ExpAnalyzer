@@ -23,5 +23,6 @@ export enum tipos{
     DECIMAL,
     CARACTER,
     BOOLEAN,
-    CADENA
+    CADENA,
+    BREAK
 }

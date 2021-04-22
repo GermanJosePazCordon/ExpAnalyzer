@@ -17,9 +17,9 @@ export default class Imprimir extends Instruccion{
     public interpretar(tree : Arbol, table : tablaSimbolos){
         var value = this.expresion.interpretar(tree, table); //OBTIENE EL VALOR
 
-        if(value instanceof Excepcion) return value;
-
-        tree.updateConsola(value+"");
+            if(value instanceof Excepcion) return value;
+    
+            tree.updateConsola(value.value+"");
     }
     
 }

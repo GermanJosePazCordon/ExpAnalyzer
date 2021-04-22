@@ -2,6 +2,7 @@ import {Request,Response} from 'express';
 import Excepcion from './analizador/exception/Exception';
 import Arbol from './analizador/tablaSimbolos/Arbol';
 import tablaSimbolos from './analizador/tablaSimbolos/TablaSimbolos';
+var Errors : Array<Excepcion> = new Array<Excepcion>();
 
 class controller{
 
@@ -27,19 +28,22 @@ class controller{
             ast.setGlobal(tabla);
 
             for(let m of ast.getInstruccion()){
-
                 if(m instanceof Excepcion){ // ERRORES SINTACTICOS
-                    //Errors.push(m);
+                    Errors.push(m);
                     ast.updateConsola((<Excepcion>m).toString());
                 }
-                var result = m.interpretar(ast, tabla);
-                if(result instanceof Excepcion){ // ERRORES SINTACTICOS
-                    //Errors.push(result);
-                    ast.updateConsola((<Excepcion>result).toString());
+                else{
+                    var result = m.interpretar(ast, tabla);
+                    if(result instanceof Excepcion){ // ERRORES SINTACTICOS
+                        Errors.push(result);
+                        ast.updateConsola((<Excepcion>result).toString());
+                    }
                 }
             }
-
-            res.json({valor:ast.getConsola()});
+            //var tmp = ast.getConsola().slice(0, -1);
+            console.log(tabla.getTable());
+            //console.log(ast.getConsola());
+            res.json({valor : ast.getConsola().slice(0, -1), error : Errors});
         }
         catch(err){
             console.log(err);

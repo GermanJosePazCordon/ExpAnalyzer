@@ -8,12 +8,13 @@ export default class Primitivo extends Instruccion{
 
     private value: any;
 
+
     constructor(tipo : Tipo, value : any, line : Number, column : Number){
         super(tipo, line, column);
         this.value = value;
     }
 
     public interpretar(tree : Arbol, table : tablaSimbolos){
-        return this.value;
+        return this;
     }
 }

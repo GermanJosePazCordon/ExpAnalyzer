@@ -1,54 +1,63 @@
-import Simbolo from './Simbolo';
-import Tipo, {tipos} from './Tipo';
+import Simbolo from "./Simbolo";
+import Tipo, {tipos} from "./Tipo";
 
-export default class TablaSimbolos{
+export default class tablaSimbolos
+{
+    public tabla: Map<String, Simbolo>;
+    private anterior: tablaSimbolos | any;// TABLA DE SIMBOLOS ANTERIOR
+    private tipo: Tipo;
+    //private funciones: Array<Func>;
 
-    public tabla : Map<String, Simbolo>;
-    private last : TablaSimbolos | any;
-    private tipo : Tipo;
-    //private func : Array<Func>;
-
-    constructor(last? : TablaSimbolos){
-        this.last = last;
+    constructor(anterior?:tablaSimbolos)
+    {
+        this.anterior = anterior;
         this.tabla = new Map<String, Simbolo>();
-        this.tipo = new Tipo(tipos.ENTERO);//tipos.ENTERO es el valor por defecto
+        this.tipo = new Tipo(tipos.ENTERO);
     }
 
-    public setVariable(simbolo : Simbolo){
-        for(var i: TablaSimbolos = this; i != null; i = i.getLast()){
-            var found : Simbolo = <Simbolo> (i.getTable().get(simbolo.getID()));
-            if(found != null){
-                return `${simbolo.getID()} ya existe.`;
+    public setVariable(simbolo:Simbolo)//DECLARACION
+    {
+        for(var e: tablaSimbolos = this; e != null; e = e.getAnterior())
+        {
+            var encontro:Simbolo = <Simbolo> (e.getTable().get(simbolo.getID()));
+            if(encontro != null)
+            {
+                return `La variable con el identificador ${simbolo.getID()} ya existe.`;
             }
             break;
         }
-        this.tabla.set(simbolo.getID(), simbolo);//Se agrega la variable
-        return `${simbolo.getID()} creada.`;   
+        this.tabla.set(simbolo.getID(), simbolo);// SE AGREGA LA VARIABLE
+
+        return `LA VARIABLE ${simbolo.getID()} SE CREO EXITOSAMENTE.`;
     }
 
-    public getVariable(id : String){
-        for(var i: TablaSimbolos = this; i != null; i = i.getLast()){
-            var found : Simbolo = <Simbolo> (i.getTable().get(id));
-            if(found != null){
-                return found;
+    public getVariable(indentificador: String)
+    {
+        for(var e: tablaSimbolos = this; e != null; e = e.getAnterior())
+        {
+            var encontro:Simbolo = <Simbolo> (e.getTable().get(indentificador));
+            if(encontro != null)
+            {
+                return encontro;
             }
         }
         return null;
     }
 
-    public getTable(){
+    public getTable() {
         return this.tabla;
     }
 
-    public setTable(tabla : Map<String, Simbolo>){
-        this.tabla = tabla;
+    public setTable(Table: Map<String, Simbolo>) {
+        this.tabla = Table;
     }
 
-    public getLast(){
-        return this.last;
+    public getAnterior() {
+        return this.anterior;
     }
 
-    public setLast(last : TablaSimbolos){
-        this.last = last;
+    public setAnterior(Anterior: tablaSimbolos) {
+        this.anterior = Anterior;
     }
+
 }
