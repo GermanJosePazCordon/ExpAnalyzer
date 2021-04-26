@@ -1,8 +1,12 @@
 import { Instruccion } from '../abstract/Instruccion';
 import Excepcion from '../exception/Exception';
+import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
 import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
 import Tipo, { tipos } from '../tablaSimbolos/Tipo';
+import Break from './Break';
+import Continue from './Continue';
+import Return from './Return';
 
 export default class IF extends Instruccion {
 
@@ -18,36 +22,36 @@ export default class IF extends Instruccion {
         this.sentencia = sentencia;
     }
 
-    public interpretar(tree: Arbol, table: tablaSimbolos) {
-        var result = this.condicion.interpretar(tree, table);
+    public interpretar(ast: Arbol, table: tablaSimbolos) {
+        var result = this.condicion.interpretar(ast, table);
         if (this.condicion.tipo.getTipo() != tipos.BOOLEAN) {
             return new Excepcion("Semántico", "Tipo de condición incorrecto", this.line, this.column);
         }
         if (result.value) {
-            let ast = new Arbol(this.listaInstruccion);
-
             var tabla = new tablaSimbolos(table);
-            //tabla.setAnterior(table);
+            //ast.setGlobal(tabla);
 
-            ast.setGlobal(tabla);
-            for (let m of ast.getInstruccion()) {
-                if (m instanceof Excepcion) { // ERRORES SINTACTICOS
-                    //Errors.push(m);
-                    ast.updateConsola((<Excepcion>m).toString());
-                }
+            for (let m of this.listaInstruccion) {
                 var result = m.interpretar(ast, tabla);
                 
                 if (result instanceof Excepcion) { // ERRORES SINTACTICOS
                     //Errors.push(result);
                     ast.updateConsola((<Excepcion>result).toString());
                 }
+
+                if(result instanceof Break){
+                    return result;
+                }
+                if(result instanceof Continue){
+                    return result;
+                }
+                if(result instanceof Return){
+                    return result;
+                }
+                if(result instanceof Primitivo){
+                    return result;
+                }
             }
-            console.log(tabla.getTable());
-            tree.updateConsola(ast.getConsola().slice(0, -1));
-            return true;
-        }else{
-            return false;
         }
     }
-
 }

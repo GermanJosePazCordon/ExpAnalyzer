@@ -24,5 +24,9 @@ export enum tipos{
     CARACTER,
     BOOLEAN,
     CADENA,
-    BREAK
+    BREAK,
+    RETURN,
+    VARIABLE,
+    FUNCION,
+    METODO
 }

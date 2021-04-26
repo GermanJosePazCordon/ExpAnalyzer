@@ -5,103 +5,109 @@ import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
 import Tipo, { tipos } from '../tablaSimbolos/Tipo';
 import Primitivo from './Primitiva';
 
-export default class Logica extends Instruccion{
+export default class Logica extends Instruccion {
 
-    private op1 : Instruccion | undefined;
-    private op2 : Instruccion | undefined;
-    private opU : Instruccion | undefined;
-    private operador : OperadorLogico;
+    private op1: Instruccion | undefined;
+    private op2: Instruccion | undefined;
+    private opU: Instruccion | undefined;
+    private operador: OperadorLogico;
 
-    constructor(operador : OperadorLogico, row : Number, column : Number, operando1 : Instruccion, operando2?:Instruccion){
+    constructor(operador: OperadorLogico, row: Number, column: Number, operando1: Instruccion, operando2?: Instruccion) {
         super(new Tipo(tipos.ENTERO), row, column);
         this.operador = operador;
         this.line = row;
         this.column = column;
-        if(!operando2){
+        if (!operando2) {
             this.opU = operando1;
         }
-        else{
+        else {
             this.op1 = operando1;
             this.op2 = operando2;
         }
     }
 
-    public interpretar(tree : Arbol, table : tablaSimbolos){
-        var left = null, right = null, unario = null;
+    public interpretar(tree: Arbol, table: tablaSimbolos) {
+        var left = null, right = null, unario = null, p1 = null, p2 = null, pu = null;
 
-        if(this.opU == (null||undefined)){
+        if (this.opU == (null || undefined)) {
             left = this.op1?.interpretar(tree, table);
-            if(left instanceof Excepcion) return left;
+            if (left instanceof Excepcion) return left;
             left = left.value;
+            p1 = this.op1?.interpretar(tree, table);
 
             right = this.op2?.interpretar(tree, table);
-            if(right instanceof Excepcion) return right;
+            if (right instanceof Excepcion) return right;
             right = right.value;
-
-            if(left.toLowerCase() == "true"){
-                left = true;
-            }else{
-                left = false;
-            }
-            if(right.toLowerCase() == "true"){
-                right = true;
-            }else{
-                right = false;
-            }
+            p2 = this.op2?.interpretar(tree, table);
+            try {
+                if (left.toLowerCase() == "true") {
+                    left = true;
+                } else {
+                    left = false;
+                }
+                if (right.toLowerCase() == "true") {
+                    right = true;
+                } else {
+                    right = false;
+                }
+            } catch { }
         }
-        else{
+        else {
             unario = this.opU.interpretar(tree, table);
-            if(unario instanceof Excepcion) return unario;
+            if (unario instanceof Excepcion) return unario;
             unario = unario.value
-
-            if(unario.toLowerCase() == "true"){
-                unario = true;
-            }else{
-                unario = false;
+            pu = this.opU.interpretar(tree, table);
+            try {
+                if (unario.toLowerCase() == "true") {
+                    unario = true;
+                } else {
+                    unario = false;
+                }
             }
+            catch { }
         }
         this.tipo = new Tipo(tipos.BOOLEAN);
-        if(null != this.operador) switch (this.operador){
+        if (null != this.operador) switch (this.operador) {
             case OperadorLogico.OR:
-                if(this.op1?.tipo.getTipo() == tipos.BOOLEAN && this.op2?.tipo.getTipo() == tipos.BOOLEAN){
-                    if(left || right){
+                if (p1.tipo.getTipo() == tipos.BOOLEAN && p2.tipo.getTipo() == tipos.BOOLEAN) {
+                    if (left || right) {
                         return this.retorno(true);
                     }
                     return this.retorno(false);
                 }
-                else{
-                    return new Excepcion("Semántico","Error de tipos en operacion ||.",this.line,this.column);
+                else {
+                    return new Excepcion("Semántico", "Error de tipos en operacion ||.", this.line, this.column);
                 }
                 break;
             case OperadorLogico.AND:
-                if(this.op1?.tipo.getTipo() == tipos.BOOLEAN && this.op2?.tipo.getTipo() == tipos.BOOLEAN){
-                    if(left && right){
+                if (p1.tipo.getTipo() == tipos.BOOLEAN && p2.tipo.getTipo() == tipos.BOOLEAN) {
+                    if (left && right) {
                         return this.retorno(true);
                     }
                     return this.retorno(false);
                 }
-                else{
-                    return new Excepcion("Semántico","Error de tipos en operacion &&.",this.line,this.column);
+                else {
+                    return new Excepcion("Semántico", "Error de tipos en operacion &&.", this.line, this.column);
                 }
                 break;
             case OperadorLogico.NOT:
-                if(this.opU?.tipo.getTipo() == tipos.BOOLEAN){
+                if (pu.tipo.getTipo() == tipos.BOOLEAN) {
 
-                    if(unario){
+                    if (unario) {
                         return this.retorno(false);
                     }
                     return this.retorno(true);
                 }
-                else{
-                    return new Excepcion("Semántico","Error de tipos en operacion !.",this.line,this.column);
+                else {
+                    return new Excepcion("Semántico", "Error de tipos en operacion !.", this.line, this.column);
                 }
                 break;
             default:
-                return new Excepcion("Semántico","Tipo de Operación Erróneo.",this.line,this.column);
+                return new Excepcion("Semántico", "Tipo de Operación Erróneo.", this.line, this.column);
         }
     }
 
-    public retorno(result : any){
+    public retorno(result: any) {
         return new Primitivo(this.tipo, result, this.line, this.column);
     }
 

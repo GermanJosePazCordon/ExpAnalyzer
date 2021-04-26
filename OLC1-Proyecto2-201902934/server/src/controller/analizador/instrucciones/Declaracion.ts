@@ -11,7 +11,7 @@ export default class Declaracion extends Instruccion{
     //private type : Tipo;
     private id : String;
     private value : any;
-    private operador : OperadorDeclaracion
+    private operador : OperadorDeclaracion;
 
     constructor(line : Number, column : Number, operador : OperadorDeclaracion, id : String, value? : any){
         super(new Tipo(tipos.CADENA),line, column);
@@ -31,12 +31,12 @@ export default class Declaracion extends Instruccion{
             if(valor instanceof Excepcion) return valor;
         }
         if(valor){
-            if(this.existe(table, valor.tipo, valor.value)){
-                return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column);
-            }
             if(null != this.operador) switch (this.operador){
                 case OperadorDeclaracion.ENTERO:
                     if(tipos.ENTERO == valor.tipo.getTipo()){
+                        if(this.existe(table, valor.tipo, valor.value)){
+                            return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column);
+                        }
                         table.setVariable( new Simbolo(valor.tipo, this.id, valor.value));
                     }
                     else{
@@ -45,6 +45,9 @@ export default class Declaracion extends Instruccion{
                     break;
                 case OperadorDeclaracion.DECIMAL:
                     if(tipos.DECIMAL == valor.tipo.getTipo()){
+                        if(this.existe(table, valor.tipo, valor.value)){
+                            return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column);
+                        }
                         table.setVariable( new Simbolo(valor.tipo, this.id, valor.value));
                     }
                     else{
@@ -53,6 +56,9 @@ export default class Declaracion extends Instruccion{
                     break;
                 case OperadorDeclaracion.BOOLEAN:
                     if(tipos.BOOLEAN == valor.tipo.getTipo()){
+                        if(this.existe(table, valor.tipo, valor.value)){
+                            return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column);
+                        }
                         table.setVariable( new Simbolo(valor.tipo, this.id, valor.value));
                     }
                     else{
@@ -61,6 +67,9 @@ export default class Declaracion extends Instruccion{
                     break;
                 case OperadorDeclaracion.CADENA:
                     if(tipos.CADENA == valor.tipo.getTipo()){
+                        if(this.existe(table, valor.tipo, valor.value)){
+                            return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column);
+                        }
                         table.setVariable( new Simbolo(valor.tipo, this.id, valor.value));
                     }
                     else{
@@ -69,6 +78,9 @@ export default class Declaracion extends Instruccion{
                     break;
                 case OperadorDeclaracion.CARACTER:
                     if(tipos.CARACTER == valor.tipo.getTipo()){
+                        if(this.existe(table, valor.tipo, valor.value)){
+                            return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column);
+                        }
                         table.setVariable( new Simbolo(valor.tipo, this.id, valor.value));
                     }
                     else{

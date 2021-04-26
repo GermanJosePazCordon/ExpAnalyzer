@@ -4,6 +4,10 @@ import Arbol from '../tablaSimbolos/Arbol';
 import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
 import Tipo, { tipos } from '../tablaSimbolos/Tipo';
 import Case from '../expression/Case';
+import Break from './Break';
+import Continue from './Continue';
+import Return from './Return';
+import Primitivo from '../expression/Primitiva';
 
 export default class Switch extends Instruccion {
 
@@ -27,17 +31,16 @@ export default class Switch extends Instruccion {
         }
     }
 
-    public interpretar(tree: Arbol, table: tablaSimbolos) {
+    public interpretar(ast: Arbol, table: tablaSimbolos) {
         if (this.listaCases.length > 0 && this.listaDefault.length > 0) {
             var breakk : Boolean;
             var def : Boolean;
             breakk = false;
             def = true;
             for (let i of this.listaCases) {
-                var result = this.express.interpretar(tree, table);
-                //console.log(result.value);
+                var result = this.express.interpretar(ast, table);
                 if(!breakk){
-                    var condicion = i.getExpresion().interpretar(tree, table);
+                    var condicion = i.getExpresion().interpretar(ast, table);
                     var instruccion = i.getInstrucciones();
                     if(condicion.value == result.value){
                         for(let j of instruccion){
@@ -46,7 +49,7 @@ export default class Switch extends Instruccion {
                                 break;
                             }
                         }
-                        this.ejecutar(tree, table, instruccion);
+                        this.ejecutar(ast, table, instruccion);
                     }
                 }
             }
@@ -54,46 +57,50 @@ export default class Switch extends Instruccion {
                 def = false;
             }
             if(def){
-                this.ejecutar(tree, table, this.listaDefault);
+                this.ejecutar(ast, table, this.listaDefault);
             }
         }
         else if (this.listaCases.length > 0) {
-            var result = this.express.interpretar(tree, table);
+            var result = this.express.interpretar(ast, table);
             for (let i of this.listaCases) {
-                var condicion = i.getExpresion().interpretar(tree, table);
+                var condicion = i.getExpresion().interpretar(ast, table);
                 var instruccion = i.getInstrucciones();
                 if(condicion.value == result.value){
-                    this.ejecutar(tree, table, instruccion);
+                    this.ejecutar(ast, table, instruccion);
                 }
             }
         }
         else {
-            this.ejecutar(tree, table, this.listaDefault);
+            this.ejecutar(ast, table, this.listaDefault);
         }
         return true;
     }
 
-    public ejecutar(tree: Arbol, table: tablaSimbolos, lista: Array<Instruccion>) {
-        let ast = new Arbol(lista);
-
+    public ejecutar(ast: Arbol, table: tablaSimbolos, lista: Array<Instruccion>) {
         var tabla = new tablaSimbolos(table);
-        //tabla.setAnterior(table);
-
         ast.setGlobal(tabla);
-        for (let m of ast.getInstruccion()) {
-            if (m instanceof Excepcion) { // ERRORES SINTACTICOS
-                //Errors.push(m);
-                ast.updateConsola((<Excepcion>m).toString());
-            }
+
+        for (let m of lista) {
             var result = m.interpretar(ast, tabla);
 
             if (result instanceof Excepcion) { // ERRORES SINTACTICOS
                 //Errors.push(result);
                 ast.updateConsola((<Excepcion>result).toString());
+                
+            }
+            /*if(result instanceof Break){
+                break;
+            }
+            if(result instanceof Continue){
+                break;
+            }*/
+            if(result instanceof Return){
+                return result;
+            }
+            if(result instanceof Primitivo){
+                return result;
             }
         }
-        console.log(tabla.getTable());
-        tree.updateConsola(ast.getConsola().slice(0, -1));
     }
 
 }

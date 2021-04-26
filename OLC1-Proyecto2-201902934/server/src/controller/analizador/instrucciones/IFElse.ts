@@ -1,8 +1,12 @@
 import { Instruccion } from '../abstract/Instruccion';
 import Excepcion from '../exception/Exception';
+import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
 import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
 import Tipo, { tipos } from '../tablaSimbolos/Tipo';
+import Break from './Break';
+import Continue from './Continue';
+import Return from './Return';
 
 export default class IFElse extends Instruccion {
 
@@ -26,48 +30,38 @@ export default class IFElse extends Instruccion {
             return new Excepcion("Semántico", "Tipo de condición incorrecto", this.line, this.column);
         }
         if (result.value) {
-            let ast = new Arbol(this.lista);
-
-            var tabla = new tablaSimbolos(table);
-            //table.setLast(table);
-            ast.setGlobal(tabla);
-            for (let m of ast.getInstruccion()) {
-                if (m instanceof Excepcion) { // ERRORES SINTACTICOS
-                    //Errors.push(m);
-                    ast.updateConsola((<Excepcion>m).toString());
-                }
-                var result = m.interpretar(ast, tabla);
-                
-                if (result instanceof Excepcion) { // ERRORES SINTACTICOS
-                    //Errors.push(result);
-                    ast.updateConsola((<Excepcion>result).toString());
-                }
-            }
-            console.log(tabla.getTable());
-            tree.updateConsola(ast.getConsola().slice(0, -1));
-            return true;
+            var tmp = this.ejecutar(tree, table, this.lista);
+            return tmp
+            //return true;
         }else{
-            
-            let ast = new Arbol(this.lista2);
+            var tmp = this.ejecutar(tree, table, this.lista2);
+            return tmp
+        }
+    }
 
-            var tabla = new tablaSimbolos(table);
-            //table.setLast(table);
-            ast.setGlobal(tabla);
-            for (let m of ast.getInstruccion()) {
-                if (m instanceof Excepcion) { // ERRORES SINTACTICOS
-                    //Errors.push(m);
-                    ast.updateConsola((<Excepcion>m).toString());
-                }
-                var result = m.interpretar(ast, tabla);
-                
-                if (result instanceof Excepcion) { // ERRORES SINTACTICOS
-                    //Errors.push(result);
-                    ast.updateConsola((<Excepcion>result).toString());
-                }
+    public ejecutar(ast : Arbol, table : tablaSimbolos, lista : Array<Instruccion>){
+        var tabla = new tablaSimbolos(table);
+        ast.setGlobal(tabla);
+
+        for (let m of lista) {
+            var result = m.interpretar(ast, tabla);
+            
+            if (result instanceof Excepcion) { // ERRORES SINTACTICOS
+                //Errors.push(result);
+                ast.updateConsola((<Excepcion>result).toString());
             }
-            console.log(tabla.getTable());
-            tree.updateConsola(ast.getConsola().slice(0, -1));
-            return false;
+            if(result instanceof Break){
+                return result;
+            }
+            if(result instanceof Continue){
+                return result;
+            }
+            if(result instanceof Return){
+                return result;
+            }
+            if(result instanceof Primitivo){
+                return result;
+            }
         }
     }
 

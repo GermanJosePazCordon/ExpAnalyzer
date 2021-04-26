@@ -1,8 +1,12 @@
 import { Instruccion } from '../abstract/Instruccion';
 import Excepcion from '../exception/Exception';
+import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
 import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
 import Tipo, { tipos } from '../tablaSimbolos/Tipo';
+import Break from './Break';
+import Continue from './Continue';
+import Return from './Return';
 
 export default class DoWhile extends Instruccion {
 
@@ -15,32 +19,48 @@ export default class DoWhile extends Instruccion {
         this.listaInstruccion = listaInstruccion;
     }
 
-    public interpretar(tree: Arbol, table: tablaSimbolos) {
-        var result = this.express.interpretar(tree, table);
+    public interpretar(ast: Arbol, table: tablaSimbolos) {
+        var result = this.express.interpretar(ast, table);
         if (this.express.tipo.getTipo() != tipos.BOOLEAN) {
             return new Excepcion("Semántico", "Tipo de condición incorrecto", this.line, this.column);
         }
+        var condicion = false;
+        var breakk = false
         do {
-            let ast = new Arbol(this.listaInstruccion);
 
             var tabla = new tablaSimbolos(table);
-            //tabla.setAnterior(table);
-
             ast.setGlobal(tabla);
-            for (let m of ast.getInstruccion()) {
-                if (m instanceof Excepcion) { // ERRORES SINTACTICOS
-                    //Errors.push(m);
-                    ast.updateConsola((<Excepcion>m).toString());
-                }
+            
+            for (let m of this.listaInstruccion) {
                 var result = m.interpretar(ast, tabla);
                 if (result instanceof Excepcion) { // ERRORES SINTACTICOS
-                    //Errors.push(result);
+
                     ast.updateConsola((<Excepcion>result).toString());
                 }
+                if(result instanceof Break){
+                    breakk = true;
+                    break;
+                }
+                if(result instanceof Continue){
+                    break;
+                }
+                if (result instanceof Return) {
+                    return result;
+                }
+                if (result instanceof Primitivo) {
+                    return result;
+                }
             }
-            console.log(tabla.getTable());
-            tree.updateConsola(ast.getConsola().slice(0, -1));
-        } while (this.express.interpretar(tree, table).value);
+            //console.log(tabla.getTable());
+            if(this.express.interpretar(ast, table).value.toString().toLowerCase() == "true"){
+                condicion = true;
+            }else{
+                condicion = false;
+            }
+            if(breakk){
+                break;
+            }
+        } while (condicion);
     }
 
 }

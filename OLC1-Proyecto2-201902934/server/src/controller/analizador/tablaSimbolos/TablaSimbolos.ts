@@ -19,10 +19,10 @@ export default class tablaSimbolos
     {
         for(var e: tablaSimbolos = this; e != null; e = e.getAnterior())
         {
-            var encontro:Simbolo = <Simbolo> (e.getTable().get(simbolo.getID()));
+            var encontro:Simbolo = <Simbolo> (e.getTable().get(simbolo.getID().toLowerCase()));
             if(encontro != null)
             {
-                return `La variable con el identificador ${simbolo.getID()} ya existe.`;
+                return `La variable con el identificador ${simbolo.getID().toLowerCase()} ya existe.`;
             }
             break;
         }
@@ -35,7 +35,7 @@ export default class tablaSimbolos
     {
         for(var e: tablaSimbolos = this; e != null; e = e.getAnterior())
         {
-            var encontro:Simbolo = <Simbolo> (e.getTable().get(indentificador));
+            var encontro:Simbolo = <Simbolo> (e.getTable().get(indentificador.toLowerCase()));
             if(encontro != null)
             {
                 return encontro;

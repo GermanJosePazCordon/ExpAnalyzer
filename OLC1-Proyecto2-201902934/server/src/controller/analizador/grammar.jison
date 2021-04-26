@@ -37,6 +37,19 @@
 "case"              return 'CASE';
 "break"             return 'BREAK';
 "default"           return 'DEFAULT';
+"return"            return 'RETURN';
+"continue"          return 'CONTINUE';
+
+"void"              return 'VOID';
+
+"tolower"           return 'TOLOWER';
+"toupper"           return 'TOUPPER';
+"length"            return 'LENGTH';
+"truncate"          return 'TRUNCATE';
+"round"             return 'ROUND';
+"typeof"            return 'TYPEOF';
+"tostring"          return 'TOSTRING';
+"tochararray"       return 'TOCHARARRAY';
 
 "while"             return 'WHILE';
 "do"                return 'DO';
@@ -44,6 +57,7 @@
 
 ";"                 return 'PTCOMA';
 ":"                 return 'DBPUNTO';
+","                 return 'COMA';
 "("                 return 'PARIZQ';
 ")"                 return 'PARDER';
 
@@ -57,6 +71,7 @@
 "*"					return 'MULTIPLICACION';
 "%"					return 'MODULO';
 "^"					return 'POTENCIA';
+"?"                 return 'INTERROGACION';
 
 "=="                return 'IGUALACION';
 "!="                return 'DIFERENCIACION';
@@ -104,6 +119,7 @@
     const Switch = require('./instrucciones/Switch');
     const Case = require('./expression/Case');
     const Break = require('./instrucciones/Break');
+    const Return = require('./instrucciones/Return');
     const Incremento = require('./instrucciones/Incremento');
     const Decremento = require('./instrucciones/Decremento');
     const MasMas = require('./expression/MasMas');
@@ -111,10 +127,21 @@
     const While = require('./instrucciones/While');
     const DoWhile = require('./instrucciones/DoWhile');
     const For = require('./instrucciones/For');
+    const Funciones = require('./instrucciones/Funciones');
+    const Parametros = require('./instrucciones/Parametros');
+    const Llamada = require('./instrucciones/LlamadaFunciones');
+    const Continue = require('./instrucciones/Continue');
+    const Metodos = require('./instrucciones/Metodos');
+    const LlamadaMet = require('./instrucciones/LlamadaMetodos');
+    const Nativas = require('./instrucciones/Nativas');
+    const Ternario = require('./instrucciones/Ternario');
+
 %}
 
 // PRECEDENCIA
 
+%left 'DBPUNTO'
+%left 'INTERROGACION'
 %left 'OR'
 %left 'AND'
 %right 'NOT'
@@ -140,17 +167,24 @@ INSTRUCCIONES
 ;
 
 INSTRUCCION
-	: DEFPRINT           { $$ = $1; }
-    | DECLARARVARIABLE   { $$ = $1; }
-    | ASIGNARVARIABLE    { $$ = $1; }
-    | SENTENCIAIF        { $$ = $1; }
-    | SENTENCIASWITCH    { $$ = $1; }
-    | INSTRUCCIONBREAK   { $$ = $1; }
-    | SENTENCIAWHILE     { $$ = $1; }
-    | INCREMENTO         { $$ = $1; }
-    | SENTENCIADOWHILE   { $$ = $1; }
-    | SENTENCIAFOR       { $$ = $1; }
-	| error              { console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); }
+	: DEFPRINT              { $$ = $1; }
+    | DECLARARVARIABLE      { $$ = $1; }
+    | ASIGNARVARIABLE       { $$ = $1; }
+    | SENTENCIAIF           { $$ = $1; }
+    | SENTENCIASWITCH       { $$ = $1; }
+    | INSTRUCCIONBREAK      { $$ = $1; }
+    | INSTRUCCIONRETURN     { $$ = $1; }
+    | INSTRUCCIONCONTINUE   { $$ = $1; }
+    | SENTENCIAWHILE        { $$ = $1; }
+    | INCREMENTO            { $$ = $1; }
+    | SENTENCIADOWHILE      { $$ = $1; }
+    | SENTENCIAFOR          { $$ = $1; }
+    | FUNCIONES             { $$ = $1; }
+    | METODOS               { $$ = $1; }
+    | LLAMADA               { $$ = $1; }
+    | LLAMADAMet            { $$ = $1; }
+    | NATIVAS               { $$ = $1; }
+	| error                 { console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); }
 ;
 
 DEFPRINT
@@ -195,13 +229,22 @@ INSTRUCCIONBREAK
     : BREAK PTCOMA                         { $$ = new Break.default(@1.first_line, @1.first_column, $1); }
 ;
 
+INSTRUCCIONCONTINUE
+    : CONTINUE PTCOMA                         { $$ = new Continue.default(@1.first_line, @1.first_column, $1); }
+;
+
+INSTRUCCIONRETURN
+    : RETURN PTCOMA                         { $$ = new Return.default(@1.first_line, @1.first_column, null); }
+    | RETURN EXPRESION PTCOMA               { $$ = new Return.default(@1.first_line, @1.first_column, $2); }
+;
+
 SENTENCIAWHILE
     : WHILE PARIZQ EXPRESION PARDER LLAIZQ INSTRUCCIONES LLADER  { $$ = new While.default(@1.first_line, @1.first_column, $3, $6); }
 ;
 
 INCREMENTO
-    : EXPRESION INCREMENTAR PTCOMA      { $$ = new MasMas.default(@1.first_line, @1.first_column, $1); }
-    | EXPRESION DECREMENTAR PTCOMA      { $$ = new MenosMenos.default(@1.first_line, @1.first_column, $1); }
+    : IDENTIFICADOR INCREMENTAR PTCOMA      { $$ = new Incremento.default(@1.first_line, @1.first_column, $1); }
+    | IDENTIFICADOR DECREMENTAR PTCOMA      { $$ = new Decremento.default(@1.first_line, @1.first_column, $1); }
 ;
 
 SENTENCIADOWHILE
@@ -220,8 +263,44 @@ DECLARAFOR
 
 ACTUALIZACION
     : IDENTIFICADOR INCREMENTAR         { $$ = new Incremento.default(@1.first_line, @1.first_column, $1); }
-    | IDENTIFICADOR DECREMENTAR         { $$ = new Decremento.default(@1.first_line, @1.first_column, $1, Aritmetica.OperadorAritmetico.MENOS); }
+    | IDENTIFICADOR DECREMENTAR         { $$ = new Decremento.default(@1.first_line, @1.first_column, $1); }
     | IDENTIFICADOR IGUAL EXPRESION     { $$ = new Asignacion.default(@1.first_line, @1.first_column, $1, $3); }
+;
+
+FUNCIONES
+    : TIPO IDENTIFICADOR PARIZQ PARAMETROS PARDER LLAIZQ INSTRUCCIONES LLADER   { $$ = new Funciones.default(@1.first_line, @1.first_column, $1, $2, $7, $4); }
+    | TIPO IDENTIFICADOR PARIZQ PARDER LLAIZQ INSTRUCCIONES LLADER              { $$ = new Funciones.default(@1.first_line, @1.first_column, $1, $2, $6, null); }
+;
+
+METODOS
+    : VOID IDENTIFICADOR PARIZQ PARAMETROS PARDER LLAIZQ INSTRUCCIONES LLADER   { $$ = new Metodos.default(@1.first_line, @1.first_column, $2, $7, $4); }
+    | VOID IDENTIFICADOR PARIZQ PARDER LLAIZQ INSTRUCCIONES LLADER              { $$ = new Metodos.default(@1.first_line, @1.first_column, $2, $6, null); }
+;
+
+PARAMETROS
+    : PARAMETROS COMA TIPO IDENTIFICADOR    { $1.push(new Parametros.default(@1.first_line, @1.first_column, $3, $4)); $$ = $1; }
+    | TIPO IDENTIFICADOR                    { $$ = [new Parametros.default(@1.first_line, @1.first_column, $1, $2)]; }
+;
+
+LLAMADA
+    : IDENTIFICADOR PARIZQ PARAMETROS_LLAMADA PARDER PTCOMA    { $$ = new Llamada.default(@1.first_line, @1.first_column, $1, $3); }
+    | IDENTIFICADOR PARIZQ PARDER PTCOMA                       { $$ = new Llamada.default(@1.first_line, @1.first_column, $1, null); }
+;
+
+PARAMETROS_LLAMADA
+    : PARAMETROS_LLAMADA COMA EXPRESION    { $1.push($3); $$ = $1; }
+    | EXPRESION                            { $$ = [$1]; }
+;
+
+NATIVAS
+    : TOLOWER PARIZQ EXPRESION PARDER PTCOMA        { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TOLOWER, $3); }
+    | TOUPPER PARIZQ EXPRESION PARDER PTCOMA        { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TOUPPER, $3); }
+    | LENGTH PARIZQ EXPRESION PARDER PTCOMA         { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.LENGTH, $3); }
+    | TRUNCATE PARIZQ EXPRESION PARDER PTCOMA       { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TRUNCATE, $3); }
+    | ROUND PARIZQ EXPRESION PARDER PTCOMA          { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.ROUND, $3); }
+    | TYPEOF PARIZQ EXPRESION PARDER PTCOMA         { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TYPEOF, $3); }
+    | TOSTRING PARIZQ EXPRESION PARDER PTCOMA       { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TOSTRING, $3); }
+    | TOCHARARRAY PARIZQ EXPRESION PARDER PTCOMA    { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TOCHARARRAY, $3); }
 ;
 
 EXPRESION
@@ -252,6 +331,17 @@ EXPRESION
     | IDENTIFICADOR                         { $$ = new Variable.default(@1.first_line, @1.first_column, $1); }
     | EXPRESION INCREMENTAR                 { $$ = new MasMas.default(@1.first_line, @1.first_column, $1); }
     | EXPRESION DECREMENTAR                 { $$ = new MenosMenos.default(@1.first_line, @1.first_column, $1); }
+    | IDENTIFICADOR PARIZQ PARAMETROS_LLAMADA PARDER    { $$ = new Llamada.default(@1.first_line, @1.first_column, $1, $3); }
+    | IDENTIFICADOR PARIZQ PARDER                       { $$ = new Llamada.default(@1.first_line, @1.first_column, $1, null); }
+    | TOLOWER PARIZQ EXPRESION PARDER        { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TOLOWER, $3); }
+    | TOUPPER PARIZQ EXPRESION PARDER        { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TOUPPER, $3); }
+    | LENGTH PARIZQ EXPRESION PARDER         { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.LENGTH, $3); }
+    | TRUNCATE PARIZQ EXPRESION PARDER       { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TRUNCATE, $3); }
+    | ROUND PARIZQ EXPRESION PARDER          { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.ROUND, $3); }
+    | TYPEOF PARIZQ EXPRESION PARDER         { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TYPEOF, $3); }
+    | TOSTRING PARIZQ EXPRESION PARDER       { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TOSTRING, $3); }
+    | TOCHARARRAY PARIZQ EXPRESION PARDER    { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TOCHARARRAY, $3); }
+    | EXPRESION INTERROGACION EXPRESION DBPUNTO EXPRESION    { $$ = new Ternario.default(@1.first_line, @1.first_column, $1, $3, $5); }
 ;
 
 TIPO 

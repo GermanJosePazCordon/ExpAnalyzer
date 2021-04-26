@@ -40,9 +40,7 @@ class controller{
                     }
                 }
             }
-            //var tmp = ast.getConsola().slice(0, -1);
-            console.log(tabla.getTable());
-            //console.log(ast.getConsola());
+            //console.log(tabla.getTable());
             res.json({valor : ast.getConsola().slice(0, -1), error : Errors});
         }
         catch(err){

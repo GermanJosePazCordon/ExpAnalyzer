@@ -17,7 +17,7 @@ export default class MenosMenos extends Instruccion {
     }
 
     public interpretar(tree: Arbol, table: tablaSimbolos) {
-        try {
+        if (this.express.tipo.getTipo() == tipos.VARIABLE) {
             var valores = null;
             if (this.express) {
                 valores = this.express?.interpretar(tree, table);
@@ -27,26 +27,20 @@ export default class MenosMenos extends Instruccion {
             if (valores.tipo.getTipo() == tipos.ENTERO) {
                 this.tipo = new Tipo(tipos.ENTERO);
                 var result = parseInt(valores.value) - 1;
-                if (table.getVariable(variable.getID())) {
-                    var asig = new Asignacion(this.line, this.column, variable.getID(), new Primitivo(new Tipo(tipos.ENTERO), result, this.line, this.column));
-                    asig.interpretar(tree, table);
-                }
-            }else if (valores.tipo.getTipo() == tipos.DECIMAL) {
+                return new Primitivo(valores.tipo, result, this.line, this.column);
+            } else if (valores.tipo.getTipo() == tipos.DECIMAL) {
                 this.tipo = new Tipo(tipos.DECIMAL);
                 var result = parseFloat(valores.value) - 1;
-                if (table.getVariable(variable.getID())) {
-                    var asig = new Asignacion(this.line, this.column, variable.getID(), new Primitivo(new Tipo(tipos.DECIMAL), result, this.line, this.column));
-                    asig.interpretar(tree, table);
-                }
-            }else {
+                return new Primitivo(valores.tipo, result, this.line, this.column);
+            } else {
                 return new Excepcion("Semántico", "Tipo no valido para incremento", this.line, this.column);
             }
-        }
-        catch {
+        } else {
             var valor = null;
             if (this.express) {
                 valor = this.express?.interpretar(tree, table);
                 if (valor instanceof Excepcion) return valor;
+                //console.log(valor);
             }
             if (valor.tipo.getTipo() == tipos.ENTERO) {
                 this.tipo = new Tipo(tipos.ENTERO);

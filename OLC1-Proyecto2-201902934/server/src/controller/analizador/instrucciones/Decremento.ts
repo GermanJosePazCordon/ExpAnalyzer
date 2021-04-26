@@ -10,11 +10,11 @@ export default class Decremento extends Instruccion {
 
     constructor(line: Number, column: Number, express: String) {
         super(new Tipo(tipos.CADENA), line, column,);
-        this.express = express;
+        this.express = express.toLowerCase();
     }
 
     public interpretar(tree: Arbol, table: tablaSimbolos) {
-        console.log(this.express);
+        //console.log(this.express);
         var variable = table.getVariable(this.express);
         if(variable){
             if(variable.getTipo().getTipo() == tipos.ENTERO){

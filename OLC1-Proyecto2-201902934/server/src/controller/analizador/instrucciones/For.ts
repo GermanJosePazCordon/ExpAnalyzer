@@ -1,8 +1,12 @@
 import { Instruccion } from '../abstract/Instruccion';
 import Excepcion from '../exception/Exception';
+import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
 import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
 import Tipo, { tipos } from '../tablaSimbolos/Tipo';
+import Break from './Break';
+import Continue from './Continue';
+import Return from './Return';
 
 export default class For extends Instruccion {
 
@@ -19,35 +23,46 @@ export default class For extends Instruccion {
         this.incremeta = incrementa;
     }
 
-    public interpretar(tree: Arbol, table: tablaSimbolos) {
-        let ast = new Arbol(this.listaInstruccion);
+    public interpretar(ast: Arbol, table: tablaSimbolos) {
 
         var tabla = new tablaSimbolos(table);
-        //tabla.setAnterior(table);
-
         ast.setGlobal(tabla);
-        var declara = this.declara.interpretar(tree, tabla);
 
-        var condicion = this.condicion.interpretar(tree, tabla);
+        var declara = this.declara;
+        declara.interpretar(ast, tabla);
+
+        var condicion = this.condicion.interpretar(ast, tabla);
         if (condicion.tipo.getTipo() != tipos.BOOLEAN) {
             return new Excepcion("Semántico", "Tipo de condición incorrecto", this.line, this.column);
         }
-        while(this.condicion.interpretar(tree, tabla).value){
-            for (let m of ast.getInstruccion()) {
+        var breakk = false;
+        while (this.condicion.interpretar(ast, tabla).value) {
+            for (let m of this.listaInstruccion) {
                 var result = m.interpretar(ast, tabla);
-    
+
                 if (result instanceof Excepcion) { // ERRORES SINTACTICOS
                     //Errors.push(result);
                     ast.updateConsola((<Excepcion>result).toString());
                 }
-    
+                if (result instanceof Break) {
+                    breakk = true;
+                    break;
+                }
+                if (result instanceof Continue) {
+                    break;
+                }
+                if (result instanceof Return) {
+                    return result;
+                }
+                if (result instanceof Primitivo) {
+                    return result;
+                }
             }
-            
-           
-            this.incremeta.interpretar(tree, tabla);
+            if (breakk) {
+                break;
+            }
+            this.incremeta.interpretar(ast, tabla);
         }
-        console.log(tabla.getTable());
-            tree.updateConsola(ast.getConsola().slice(0, -1));
     }
 
 }

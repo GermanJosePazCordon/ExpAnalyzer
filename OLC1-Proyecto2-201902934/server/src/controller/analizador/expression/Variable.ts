@@ -11,17 +11,15 @@ export default class Variable extends Instruccion{
     private id : String;
 
     constructor(line : Number, column : Number, id : String,){
-        super(new Tipo(tipos.CADENA),line, column);
+        super(new Tipo(tipos.VARIABLE),line, column);
         this.id = id.toLowerCase();
     }
 
     public interpretar(tree : Arbol, table : tablaSimbolos){
-        //console.log(table.getVariable(this.id));
-        if(table.getVariable(this.id)){
-            var variable = table.getVariable(this.id);
+        var variable = table.getVariable(this.id);
+        if(variable){
             if(variable){
                 this.tipo = variable.getTipo();
-                //console.log(table.getTable());
                 return new Primitivo(variable.getTipo(), variable.getValue(), this.line, this.column);
             }
         }else{

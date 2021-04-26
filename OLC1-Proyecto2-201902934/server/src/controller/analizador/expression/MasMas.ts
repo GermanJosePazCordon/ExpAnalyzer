@@ -5,7 +5,6 @@ import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
 import Tipo, { tipos } from '../tablaSimbolos/Tipo';
 import Primitivo from '../expression/Primitiva';
 import Variable from './Variable';
-import Asignacion from '../instrucciones/Asignacion';
 
 export default class MasMas extends Instruccion {
 
@@ -17,7 +16,7 @@ export default class MasMas extends Instruccion {
     }
 
     public interpretar(tree: Arbol, table: tablaSimbolos) {
-        try {
+        if (this.express.tipo.getTipo() == tipos.VARIABLE) {
             var valores = null;
             if (this.express) {
                 valores = this.express?.interpretar(tree, table);
@@ -27,22 +26,19 @@ export default class MasMas extends Instruccion {
             if (valores.tipo.getTipo() == tipos.ENTERO) {
                 this.tipo = new Tipo(tipos.ENTERO);
                 var result = parseInt(valores.value) + 1;
-                if (table.getVariable(variable.getID())) {
-                    var asig = new Asignacion(this.line, this.column, variable.getID(), new Primitivo(new Tipo(tipos.ENTERO), result, this.line, this.column));
-                    asig.interpretar(tree, table);
-                }
-            }else if (valores.tipo.getTipo() == tipos.DECIMAL) {
+                var tmp = table.getVariable(variable.getID());
+                tmp?.setValue(result.toString());
+                return new Primitivo(valores.tipo, result, this.line, this.column);
+            } else if (valores.tipo.getTipo() == tipos.DECIMAL) {
                 this.tipo = new Tipo(tipos.DECIMAL);
                 var result = parseFloat(valores.value) + 1;
-                if (table.getVariable(variable.getID())) {
-                    var asig = new Asignacion(this.line, this.column, variable.getID(), new Primitivo(new Tipo(tipos.DECIMAL), result, this.line, this.column));
-                    asig.interpretar(tree, table);
-                }
-            }else {
+                var tmp = table.getVariable(variable.getID());
+                tmp?.setValue(result.toString());
+                return new Primitivo(valores.tipo, result, this.line, this.column);
+            } else {
                 return new Excepcion("Semántico", "Tipo no valido para incremento", this.line, this.column);
             }
-        }
-        catch {
+        } else {
             var valor = null;
             if (this.express) {
                 valor = this.express?.interpretar(tree, table);

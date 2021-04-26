@@ -17,13 +17,15 @@ export default class Asignacion extends Instruccion{
     }
 
     public interpretar(tree : Arbol, table : tablaSimbolos){
-        console.log(this.value);
         var valor = null;
-        valor = this.value?.interpretar(tree,table);
-        if(valor instanceof Excepcion) return valor;
+        if(this.value){
+            valor =  this.value.interpretar(tree,table);
+            if(valor instanceof Excepcion) return valor;
+        }
         if(table.getVariable(this.id.toLowerCase()) != null){
             var variables = table.getVariable(this.id);
             if(variables){
+                //console.log(valor);
                 if(variables.getTipo().getTipo() == valor.tipo.getTipo()){
                     //console.log(valor);
                     variables.setValue(valor.value);
@@ -35,7 +37,6 @@ export default class Asignacion extends Instruccion{
         else{
             return new Excepcion("Semántico","No existe la varible",this.line,this.column);
         }
-        
     }
     
 }

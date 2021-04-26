@@ -4,17 +4,16 @@ import Arbol from '../tablaSimbolos/Arbol';
 import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
 import Tipo, { tipos } from '../tablaSimbolos/Tipo';
 
-export default class Incrementador extends Instruccion {
+export default class Incremento extends Instruccion {
 
     private express: String;
 
     constructor(line: Number, column: Number, express: String) {
         super(new Tipo(tipos.CADENA), line, column,);
-        this.express = express;
+        this.express = express.toLowerCase();
     }
 
     public interpretar(tree: Arbol, table: tablaSimbolos) {
-        console.log(this.express);
         var variable = table.getVariable(this.express);
         if(variable){
             if(variable.getTipo().getTipo() == tipos.ENTERO){
