@@ -5,8 +5,9 @@ export default class Simbolo{
     private tipo : Tipo;
     private id : String;
     private value : any;
+    private tipoVec? : Tipo;
 
-    constructor(tipo : Tipo, id : String, value? : any){
+    constructor(tipo : Tipo, id : String, value? : any, tipoVec? : Tipo){
         this.tipo = tipo;
         this.id = id;
         if(value){
@@ -14,6 +15,7 @@ export default class Simbolo{
         }else{
             this.value = null;
         }
+        this.tipoVec = tipoVec;
     }
 
     public getID(){
@@ -39,4 +41,9 @@ export default class Simbolo{
     public setTipo(tipo : Tipo){
         this.tipo = tipo;
     }
+
+    public getTipoVec(){
+        return this.tipoVec;
+    }
+    
 }

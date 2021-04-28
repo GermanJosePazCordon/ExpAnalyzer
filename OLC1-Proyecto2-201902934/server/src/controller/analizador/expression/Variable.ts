@@ -4,6 +4,7 @@ import Arbol from '../tablaSimbolos/Arbol';
 import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
 import Tipo, { tipos } from '../tablaSimbolos/Tipo';
 import Primitivo from '../expression/Primitiva';
+import { nodoAST } from '../abstract/NodoAST';
 
 
 export default class Variable extends Instruccion{
@@ -29,6 +30,12 @@ export default class Variable extends Instruccion{
 
     public getID(){
         return this.id;
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Variable");
+        nodo.addHijo(this.id.toString());
+        return nodo;
     }
     
 }

@@ -6,6 +6,7 @@ import Tipo, { tipos } from '../tablaSimbolos/Tipo';
 import Primitivo from '../expression/Primitiva';
 import Variable from './Variable';
 import Asignacion from '../instrucciones/Asignacion';
+import { nodoAST } from '../abstract/NodoAST';
 
 export default class MenosMenos extends Instruccion {
 
@@ -55,6 +56,12 @@ export default class MenosMenos extends Instruccion {
                 return new Excepcion("Semántico", "Tipo no valido para incremento", this.line, this.column);
             }
         }
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Decremento");
+        nodo.adddHijo(this.express.getNodo());
+        return nodo;
     }
 
 }

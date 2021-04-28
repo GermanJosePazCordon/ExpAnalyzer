@@ -1,5 +1,7 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
+import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
 import Simbolo from '../tablaSimbolos/Simbolo';
 import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
@@ -140,6 +142,40 @@ export default class Declaracion extends Instruccion{
             }
         }
         
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Declarar Variable");
+        var opera = "";
+        if (null != this.operador) switch (this.operador) {
+            case OperadorDeclaracion.BOOLEAN:
+                opera = "boolean";
+                break;
+            case OperadorDeclaracion.CADENA:
+                opera = "string";
+                break;
+            case OperadorDeclaracion.CARACTER:
+                opera = "char";
+                break;
+            case OperadorDeclaracion.DECIMAL:
+                opera = "double";
+                break;
+            case OperadorDeclaracion.ENTERO:
+                opera = "int";
+                break;
+        }
+        nodo.addHijo(opera);
+        nodo.addHijo(this.id);
+        if(this.value){
+            nodo.addHijo("=");
+            if(this.value instanceof Primitivo){
+                nodo.adddHijo(this.value.getNodo()); 
+            }else{
+                nodo.addHijo(this.value.toString()); 
+            }
+        }
+        nodo.addHijo(";");
+        return nodo;
     }
     
 }

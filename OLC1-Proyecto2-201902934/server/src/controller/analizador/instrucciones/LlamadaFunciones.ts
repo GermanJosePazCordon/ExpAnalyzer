@@ -24,6 +24,8 @@ export default class LlamadaFunciones extends Instruccion {
     }
 
     public interpretar(ast: Arbol, table: tablaSimbolos) {
+       // console.log(this.parametros)
+        //setTimeout(() => { console.log("World!"); }, 5000);
         var metodo = false;
         var retono = false;
         var funcion = table.getVariable(this.id);
@@ -34,11 +36,7 @@ export default class LlamadaFunciones extends Instruccion {
             var parametrosFun = funcion.getValue().parametros;
             var instrucciones = funcion.getValue().instrucciones;
             if (this.parametros.length == parametrosFun.length) {
-                if (this.comparaTipos(ast, table, this.parametros, parametrosFun)) {
-                    //console.log("vamos bien");
-                } else {
-                   return new Excepcion("Semántico", "Tipos de parametros incorrecto", this.line, this.column);
-                }
+                
                 
             } else {
                 return new Excepcion("Semántico", "Numero de parametros incorrecto", this.line, this.column);
@@ -51,7 +49,7 @@ export default class LlamadaFunciones extends Instruccion {
                 var sim = new Simbolo(new Tipo(parametrosFun[i].getTipo()), parametrosFun[i].getID(), valor.value);
                 tabla.setVariable(sim);
             }
-            var x = 0;
+            
             for (let m of instrucciones) {
                 
                 var result = m.interpretar(ast, tabla);
@@ -65,7 +63,6 @@ export default class LlamadaFunciones extends Instruccion {
                         retono = true;
                         return new Excepcion("Semántico", "Tipo de retorno invalido", this.line, this.column);
                     }
-                    //console.log(result);
                     if (result instanceof Primitivo) {
                         retono = true;
                         if (funcion.getValue().tipo.getTipo() == result.tipo.getTipo()) {

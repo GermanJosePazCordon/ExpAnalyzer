@@ -55,11 +55,19 @@
 "do"                return 'DO';
 "for"               return 'FOR';
 
+"list"              return 'LIST';
+"new"               return 'NEW';
+"add"               return 'ADD';
+
+
 ";"                 return 'PTCOMA';
 ":"                 return 'DBPUNTO';
 ","                 return 'COMA';
+"."                 return 'PUNTO';
 "("                 return 'PARIZQ';
 ")"                 return 'PARDER';
+"["                 return 'CORIZQ';
+"]"                 return 'CORDER';
 
 "++"                return 'INCREMENTAR';
 "--"                return 'DECREMENTAR';
@@ -135,6 +143,14 @@
     const LlamadaMet = require('./instrucciones/LlamadaMetodos');
     const Nativas = require('./instrucciones/Nativas');
     const Ternario = require('./instrucciones/Ternario');
+    const DVector = require('./instrucciones/DeclararVector');
+    const AVector = require('./instrucciones/AccesoVector');
+    const MVector = require('./instrucciones/ModificarVector');
+    const DLista = require('./instrucciones/DeclararLista');
+    const ALista = require('./instrucciones/AddLista');
+    const AcLista = require('./instrucciones/AccesoLista');
+    const MLista = require('./instrucciones/ModificarLista');
+    const ToCharArray = require('./instrucciones/ToCharArray');
 
 %}
 
@@ -183,8 +199,12 @@ INSTRUCCION
     | METODOS               { $$ = $1; }
     | LLAMADA               { $$ = $1; }
     | LLAMADAMet            { $$ = $1; }
-    | NATIVAS               { $$ = $1; }
-	| error                 { console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); }
+    | DECLARARVECTOR        { $$ = $1; }
+    | MODIFICARVECTOR       { $$ = $1; }
+    | DLISTA                { $$ = $1; }
+    | ALISTA                { $$ = $1; }
+    | MLISTA                { $$ = $1; }
+	| error           { console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); }
 ;
 
 DEFPRINT
@@ -292,15 +312,31 @@ PARAMETROS_LLAMADA
     | EXPRESION                            { $$ = [$1]; }
 ;
 
-NATIVAS
-    : TOLOWER PARIZQ EXPRESION PARDER PTCOMA        { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TOLOWER, $3); }
-    | TOUPPER PARIZQ EXPRESION PARDER PTCOMA        { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TOUPPER, $3); }
-    | LENGTH PARIZQ EXPRESION PARDER PTCOMA         { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.LENGTH, $3); }
-    | TRUNCATE PARIZQ EXPRESION PARDER PTCOMA       { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TRUNCATE, $3); }
-    | ROUND PARIZQ EXPRESION PARDER PTCOMA          { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.ROUND, $3); }
-    | TYPEOF PARIZQ EXPRESION PARDER PTCOMA         { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TYPEOF, $3); }
-    | TOSTRING PARIZQ EXPRESION PARDER PTCOMA       { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TOSTRING, $3); }
-    | TOCHARARRAY PARIZQ EXPRESION PARDER PTCOMA    { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TOCHARARRAY, $3); }
+DECLARARVECTOR
+    : TIPO CORIZQ CORDER IDENTIFICADOR IGUAL NEW TIPO CORIZQ EXPRESION CORDER PTCOMA    { $$ = new DVector.default(@1.first_line, @1.first_column, $1, $4, $7, $9, null); }
+    | TIPO CORIZQ CORDER IDENTIFICADOR IGUAL LLAIZQ LISTAVALORES LLADER PTCOMA          { $$ = new DVector.default(@1.first_line, @1.first_column, $1, $4, null, null, $7); }
+;
+
+LISTAVALORES
+    : LISTAVALORES COMA EXPRESION    { $1.push($3); $$ = $1; }
+    | EXPRESION                      { $$ = [$1]; }
+;
+
+MODIFICARVECTOR
+    : IDENTIFICADOR CORIZQ EXPRESION CORDER IGUAL EXPRESION PTCOMA  { $$ = new MVector.default(@1.first_line, @1.first_column, $1, $3, $6); }
+;
+
+DLISTA
+    : LIST MENORQUE TIPO MAYORQUE IDENTIFICADOR IGUAL NEW LIST MENORQUE TIPO MAYORQUE PTCOMA       { $$ = new DLista.default(@1.first_line, @1.first_column, $3, $5, $10); }
+    | LIST MENORQUE TIPO MAYORQUE IDENTIFICADOR IGUAL TOCHARARRAY PARIZQ EXPRESION PARDER PTCOMA   { $$ = new ToCharArray.default(@1.first_line, @1.first_column, $3, $5, $9); }
+;
+
+ALISTA
+    : IDENTIFICADOR PUNTO ADD PARIZQ EXPRESION PARDER PTCOMA    { $$ = new ALista.default(@1.first_line, @1.first_column, $1, $5); }
+;
+
+MLISTA
+    : IDENTIFICADOR CORIZQ CORIZQ EXPRESION CORDER CORDER IGUAL EXPRESION PTCOMA  { $$ = new MLista.default(@1.first_line, @1.first_column, $1, $4, $8); }
 ;
 
 EXPRESION
@@ -340,8 +376,9 @@ EXPRESION
     | ROUND PARIZQ EXPRESION PARDER          { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.ROUND, $3); }
     | TYPEOF PARIZQ EXPRESION PARDER         { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TYPEOF, $3); }
     | TOSTRING PARIZQ EXPRESION PARDER       { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TOSTRING, $3); }
-    | TOCHARARRAY PARIZQ EXPRESION PARDER    { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TOCHARARRAY, $3); }
     | EXPRESION INTERROGACION EXPRESION DBPUNTO EXPRESION    { $$ = new Ternario.default(@1.first_line, @1.first_column, $1, $3, $5); }
+    | IDENTIFICADOR CORIZQ EXPRESION CORDER     { $$ = new AVector.default(@1.first_line, @1.first_column, $1, $3); }
+    | IDENTIFICADOR CORIZQ CORIZQ EXPRESION CORDER CORDER     { $$ = new AcLista.default(@1.first_line, @1.first_column, $1, $4); }
 ;
 
 TIPO 

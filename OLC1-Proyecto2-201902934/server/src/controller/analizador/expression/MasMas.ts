@@ -5,6 +5,7 @@ import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
 import Tipo, { tipos } from '../tablaSimbolos/Tipo';
 import Primitivo from '../expression/Primitiva';
 import Variable from './Variable';
+import { nodoAST } from '../abstract/NodoAST';
 
 export default class MasMas extends Instruccion {
 
@@ -58,6 +59,12 @@ export default class MasMas extends Instruccion {
                 return new Excepcion("Semántico", "Tipo no valido para incremento", this.line, this.column);
             }
         }
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Incremento");
+        nodo.adddHijo(this.express.getNodo());
+        return nodo;
     }
 
 }

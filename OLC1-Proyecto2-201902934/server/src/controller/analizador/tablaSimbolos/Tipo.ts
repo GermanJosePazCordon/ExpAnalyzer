@@ -28,5 +28,7 @@ export enum tipos{
     RETURN,
     VARIABLE,
     FUNCION,
-    METODO
+    METODO,
+    VECTOR,
+    LISTA
 }

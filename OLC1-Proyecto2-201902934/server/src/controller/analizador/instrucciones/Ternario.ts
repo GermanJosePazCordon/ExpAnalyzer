@@ -29,6 +29,7 @@ export default class Ternario extends Instruccion {
 
         if(cond.value){
             expre1 = this.express1.interpretar(tree, table);
+            //console.log(this.express1);
             if(expre1 instanceof Excepcion) return expre1;
             
             return new Primitivo(expre1.tipo, expre1.value, this.line, this.column);

@@ -1,5 +1,7 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
+import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
 import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
 import Tipo, { tipos } from '../tablaSimbolos/Tipo';
@@ -37,6 +39,19 @@ export default class Asignacion extends Instruccion{
         else{
             return new Excepcion("Semántico","No existe la varible",this.line,this.column);
         }
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Asigar Variable");
+        nodo.addHijo(this.id);
+        nodo.addHijo("=");
+        if(this.value instanceof Primitivo){
+            nodo.adddHijo(this.value.getNodo()); 
+        }else{
+            nodo.addHijo(this.value.toString()); 
+        }
+        nodo.addHijo(";"); 
+        return nodo;
     }
     
 }

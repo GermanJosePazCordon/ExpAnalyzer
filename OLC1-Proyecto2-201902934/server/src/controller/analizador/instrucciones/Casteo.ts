@@ -4,6 +4,7 @@ import Arbol from '../tablaSimbolos/Arbol';
 import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
 import Tipo, { tipos } from '../tablaSimbolos/Tipo';
 import Primitivo from '../expression/Primitiva';
+import { nodoAST } from '../abstract/NodoAST';
 
 export default class Casteo extends Instruccion{
 
@@ -25,7 +26,7 @@ export default class Casteo extends Instruccion{
             if(null != this.operador) switch (this.operador){
                 case OperadorCasteo.ENTERO:
                     if(valor.tipo.getTipo() == tipos.DECIMAL){
-                        return new Primitivo(new Tipo(tipos.ENTERO), parseInt(valor.value) + "", this.line, this.column);
+                        return new Primitivo(new Tipo(tipos.ENTERO), parseInt(valor.value), this.line, this.column);
                     }
                     else if(valor.tipo.getTipo() == tipos.CARACTER){
                         return new Primitivo(new Tipo(tipos.ENTERO), parseInt(valor.value.charCodeAt(0)) + "", this.line, this.column);
@@ -124,6 +125,37 @@ export default class Casteo extends Instruccion{
             }
         }
     }
+
+    /*public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Casteo");
+        var opera = "";
+        if (null != this.operador) switch (this.operador) {
+            case OperadorCasteo.BOOLEAN:
+                opera = "boolean";
+                break;
+            case OperadorCasteo.CADENA:
+                opera = "string";
+                break;
+            case OperadorCasteo.CARACTER:
+                opera = "char";
+                break;
+            case OperadorCasteo.DECIMAL:
+                opera = "double";
+                break;
+            case OperadorCasteo.ENTERO:
+                opera = "int";
+                break;
+        }
+        nodo.addHijo("(");
+        nodo.addHijo(opera);
+        nodo.addHijo(")");
+        if(this.value instanceof Primitivo){
+            nodo.adddHijo(this.value.getNodo()); 
+        }else{
+            nodo.addHijo(this.value.toString()); 
+        }
+        return nodo;
+    }*/
     
 }
 

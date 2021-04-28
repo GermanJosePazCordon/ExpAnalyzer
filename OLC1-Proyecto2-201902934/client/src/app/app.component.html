@@ -23,7 +23,7 @@
             <button type="button" class="btn btn-secondary" (click)="deleteTab()" [disabled]="listTabs.length === 1">Close Tab</button>
         </li>
         <li class="nav-item">
-            <button type="button" class="btn btn-secondary">AST</button>
+            <button type="button" class="btn btn-secondary" (click)="graphAST()">AST</button>
         </li>
         <li class="nav-item">
             <button type="button" class="btn btn-secondary">Grammar</button>
@@ -86,3 +86,7 @@
 
 <!-- FILECHOOSER -->
 <input type="file" #open (change)="openFile($event)" style="display: none"/>
+
+<!-- GRAPHVIZ -->
+<div id = "graph"> 
+</div>

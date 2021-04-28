@@ -1,6 +1,7 @@
 import Tipo from '../tablaSimbolos/Tipo';
 import Arbol from '../tablaSimbolos/Arbol';
 import TablaSimbolos from '../tablaSimbolos/TablaSimbolos';
+import { nodoAST } from './NodoAST';
 
 export abstract class Instruccion {
 
@@ -16,4 +17,6 @@ export abstract class Instruccion {
 
     abstract interpretar(arbol: Arbol, tabla: TablaSimbolos):any;
     // TODO graficar AST
+
+    abstract getNodo() : nodoAST;
 }

@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Arbol from '../tablaSimbolos/Arbol';
 import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
@@ -24,23 +25,31 @@ export default class Relacional extends Instruccion {
     public interpretar(tree: Arbol, table: tablaSimbolos) {
         var left = null, right = null, unario = null, p1 = null, p2 = null, pu = null;
 
-        left = this.op1?.interpretar(tree, table);
-        if (left instanceof Excepcion) return left;
-        left = left.value;
         p1 = this.op1?.interpretar(tree, table);
+        if (p1 instanceof Excepcion) return p1;
+        left = p1.value;
+        //p1 = this.op1?.interpretar(tree, table);
 
-        right = this.op2?.interpretar(tree, table);
-        if (right instanceof Excepcion) return right;
-        right = right.value;
         p2 = this.op2?.interpretar(tree, table);
+        if (p2 instanceof Excepcion) return p2;
+        right = p2.value;
+        //p2 = this.op2?.interpretar(tree, table);
 
         this.tipo = new Tipo(tipos.BOOLEAN);
 
         if (p1.tipo.getTipo() == tipos.BOOLEAN) {
-            left = left.toString().toLowerCase();
+            if(left.toString().toLowerCase() == "true"){
+                left = true
+            }else{
+                left = false;
+            }
         }
         if (p2.tipo.getTipo() == tipos.BOOLEAN) {
-            right = right.toString().toLowerCase();
+            if(right.toString().toLowerCase() == "true"){
+                right = true
+            }else{
+                right = false;
+            }
         }
         if (null != this.operador) switch (this.operador) {
             case OperadorRelacional.MAYORQUE:
@@ -72,6 +81,9 @@ export default class Relacional extends Instruccion {
                     return this.retorno(left.codePointAt(0) > parseInt(right));
                 }
                 else if (p1.tipo.getTipo() == tipos.CADENA && p2.tipo.getTipo() == tipos.CADENA) {
+                    return this.retorno(left > right);
+                }
+                else if (p1.tipo.getTipo() == tipos.BOOLEAN && p2.tipo.getTipo() == tipos.BOOLEAN) {
                     return this.retorno(left > right);
                 }
                 else {
@@ -109,6 +121,9 @@ export default class Relacional extends Instruccion {
                 else if (p1.tipo.getTipo() == tipos.CADENA && p2.tipo.getTipo() == tipos.CADENA) {
                     return this.retorno(left < right);
                 }
+                else if (p1.tipo.getTipo() == tipos.BOOLEAN && p2.tipo.getTipo() == tipos.BOOLEAN) {
+                    return this.retorno(left < right);
+                }
                 else {
                     return new Excepcion("Semántico", "Error en operacion entre tipos.", this.line, this.column);
                 }
@@ -142,6 +157,9 @@ export default class Relacional extends Instruccion {
                     return this.retorno(left.codePointAt(0) >= parseInt(right));
                 }
                 else if (p1.tipo.getTipo() == tipos.CADENA && p2.tipo.getTipo() == tipos.CADENA) {
+                    return this.retorno(left >= right);
+                }
+                else if (p1.tipo.getTipo() == tipos.BOOLEAN && p2.tipo.getTipo() == tipos.BOOLEAN) {
                     return this.retorno(left >= right);
                 }
                 else {
@@ -179,14 +197,16 @@ export default class Relacional extends Instruccion {
                 else if (p1.tipo.getTipo() == tipos.CADENA && p2.tipo.getTipo() == tipos.CADENA) {
                     return this.retorno(left <= right);
                 }
+                else if (p1.tipo.getTipo() == tipos.BOOLEAN && p2.tipo.getTipo() == tipos.BOOLEAN) {
+                    return this.retorno(left <= right);
+                }
                 else {
                     return new Excepcion("Semántico", "Error en operacion entre tipos.", this.line, this.column);
                 }
                 break;
             case OperadorRelacional.IGUALACION:
-                
                 if (p1.tipo.getTipo() == tipos.ENTERO && p2.tipo.getTipo() == tipos.ENTERO) {
-                    return this.retorno(left == right);
+                    return this.retorno(parseInt(left) == parseInt(right));
                 }
                 else if (p1.tipo.getTipo() == tipos.ENTERO && p2.tipo.getTipo() == tipos.DECIMAL) {
                     return this.retorno(parseInt(left) == parseFloat(right));
@@ -213,6 +233,9 @@ export default class Relacional extends Instruccion {
                     return this.retorno(left.codePointAt(0) == parseInt(right));
                 }
                 else if (p1.tipo.getTipo() == tipos.CADENA && p2.tipo.getTipo() == tipos.CADENA) {
+                    return this.retorno(left == right);
+                }
+                else if (p1.tipo.getTipo() == tipos.BOOLEAN && p2.tipo.getTipo() == tipos.BOOLEAN) {
                     return this.retorno(left == right);
                 }
                 else {
@@ -250,6 +273,9 @@ export default class Relacional extends Instruccion {
                 else if (p1.tipo.getTipo() == tipos.CADENA && p2.tipo.getTipo() == tipos.CADENA) {
                     return this.retorno(left != right);
                 }
+                else if (p1.tipo.getTipo() == tipos.BOOLEAN && p2.tipo.getTipo() == tipos.BOOLEAN) {
+                    return this.retorno(left != right);
+                }
                 else {
                     return new Excepcion("Semántico", "Error en operacion entre tipos.", this.line, this.column);
                 }
@@ -260,8 +286,38 @@ export default class Relacional extends Instruccion {
     }
 
     public retorno(result: any) {
-
         return new Primitivo(this.tipo, result, this.line, this.column);
+    }
+
+    public getNodo(): nodoAST {
+        var opera = "";
+        if (null != this.operador) switch (this.operador) {
+            case OperadorRelacional.DIFERENCIACION:
+                opera = "!=";
+                break;
+            case OperadorRelacional.IGUALACION:
+                opera = "==";
+                break;
+            case OperadorRelacional.MAYORIGUAL:
+                opera = ">=";
+                break;
+            case OperadorRelacional.MAYORQUE:
+                opera = ">";
+                break;
+            case OperadorRelacional.MENORIGUAL:
+                opera = "<=";
+                break;
+            case OperadorRelacional.MENORQUE:
+                opera = "<";
+                break;
+        }
+        let nodo: nodoAST = new nodoAST("Relacional");
+            if (this.op1 && this.op2) {
+                nodo.adddHijo(this.op1.getNodo());
+                nodo.addHijo(opera);
+                nodo.adddHijo(this.op2.getNodo());
+            }
+        return nodo;
     }
 
 }

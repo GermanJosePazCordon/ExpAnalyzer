@@ -3,6 +3,7 @@ import pestaña from './models/pestaña';
 import {FormControl} from '@angular/forms';
 import { Interpretar } from './models/interpretar';
 import { AppService } from './services/app.service';
+import { graphviz } from 'd3-graphviz';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ export class AppComponent {
   index  = new FormControl(0); //Variable que guarda el indice del tab actual
   listTabs : pestaña [] = []; //Lista que guarda las pestañas
   file : File = null; //Variable para guardar el evento del archivo a cargar
+  dot : String = ""; //Variable para guardar el contido del dot
 
 
   interpretar : Interpretar = {
@@ -87,11 +89,16 @@ export class AppComponent {
       res=>{
         console.log(res);
         this.listTabs[this.index.value].console = res.valor;
+        this.dot = res.dot;
       },err=>{
         console.log(err);
         this.listTabs[this.index.value].console = "NO COMPILO NADA 🥺";
       }
     );
+  }
+
+  graphAST(){
+    graphviz("#graph").renderDot(this.dot);
   }
 
 }

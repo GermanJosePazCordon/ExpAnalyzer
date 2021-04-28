@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Arbol from '../tablaSimbolos/Arbol';
 import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
@@ -25,31 +26,33 @@ export default class Aritmetica extends Instruccion {
     }
 
     public interpretar(tree: Arbol, table: tablaSimbolos) {
+
         var left = null, right = null, unario = null, p1 = null, p2 = null, pu = null;
         if (this.opU == (null || undefined)) {
-            left = this.op1?.interpretar(tree, table);
-            if (left instanceof Excepcion) return left;
-            left = left.value;
-            p1 = this.op1?.interpretar(tree, table);
 
-            right = this.op2?.interpretar(tree, table);
-            if (right instanceof Excepcion) return right;
-            right = right.value;
+            p1 = this.op1?.interpretar(tree, table);
+            if (p1 instanceof Excepcion) return p1;
+
+            left = p1.value;
+
+
             p2 = this.op2?.interpretar(tree, table);
+            if (p2 instanceof Excepcion) return p2;
+            right = p2.value;
 
             if (this.op1?.tipo.getTipo() == tipos.BOOLEAN) {
                 left = left.toString().toLowerCase();
             } else if (this.op2?.tipo.getTipo() == tipos.BOOLEAN) {
                 right = right.toString().toLowerCase();
             }
+
         }
         else {
             unario = this.opU.interpretar(tree, table);
             if (unario instanceof Excepcion) return unario;
+            pu = unario;
             unario = unario.value;
-            pu = this.opU.interpretar(tree, table);
         }
-
         if (null != this.operador) switch (this.operador) {
             case OperadorAritmetico.SUMA:
                 if (p1.tipo.getTipo() == tipos.ENTERO) { // Entero + algo
@@ -158,7 +161,7 @@ export default class Aritmetica extends Instruccion {
                     }
                     else if (p2.tipo.getTipo() == tipos.DECIMAL) {
                         this.tipo = new Tipo(tipos.CADENA);
-                        return this.retorno(left + "" + right); // Cadena + Decimal
+                        return this.retorno(left + "" + parseFloat(right)); // Cadena + Decimal
                     }
                     else if (p2.tipo.getTipo() == tipos.CADENA) {
                         this.tipo = new Tipo(tipos.CADENA);
@@ -180,7 +183,7 @@ export default class Aritmetica extends Instruccion {
             case OperadorAritmetico.RESTA:
                 if (p1.tipo.getTipo() == tipos.ENTERO) { // Entero - algo
                     if (p2.tipo.getTipo() == tipos.ENTERO) {
-                
+
                         this.tipo = new Tipo(tipos.ENTERO);
                         return this.retorno(parseInt(left) - parseInt(right)); // Entero - Entero
                     }
@@ -266,10 +269,18 @@ export default class Aritmetica extends Instruccion {
                 }
                 break;
             case OperadorAritmetico.MULTIPLICACION:
-                
+                //console.log("--------------")
+                //console.log("MULTI")
+                //console.log(p1)
+                //console.log(p2)
+                //console.log("RESULTADO")
+                ///console.log(this.retorno(left * right))
+                //console.log("--------------")
+                // stop;
                 if (p1.tipo.getTipo() == tipos.ENTERO) { // Entero * algo
                     if (p2.tipo.getTipo() == tipos.ENTERO) {
                         this.tipo = new Tipo(tipos.ENTERO);
+
                         return this.retorno(parseInt(left) * parseInt(right)); // Entero * Entero
                     }
                     else if (p2.tipo.getTipo() == tipos.DECIMAL) {
@@ -346,7 +357,6 @@ export default class Aritmetica extends Instruccion {
                         else if (p2.tipo.getTipo() == tipos.DECIMAL) {
                             this.tipo = new Tipo(tipos.DECIMAL);
                             var res = this.retorno(parseFloat(left) / parseFloat(right))
-                            //console.log(res);
                             return res; // Decimal / Decimal
                         }
                         else if (p2.tipo.getTipo() == tipos.CARACTER) {
@@ -465,6 +475,46 @@ export default class Aritmetica extends Instruccion {
 
     public retorno(result: any) {
         return new Primitivo(this.tipo, result, this.line, this.column);
+    }
+
+    public getNodo(): nodoAST {
+        var opera = "";
+        if (null != this.operador) switch (this.operador) {
+            case OperadorAritmetico.SUMA:
+                opera = "+";
+                break;
+            case OperadorAritmetico.RESTA:
+                opera = "-";
+                break;
+            case OperadorAritmetico.MULTIPLICACION:
+                opera = "*";
+                break;
+            case OperadorAritmetico.DIVISION:
+                opera = "/";
+                break;
+            case OperadorAritmetico.POTENCIA:
+                opera = "^";
+                break;
+            case OperadorAritmetico.MODULO:
+                opera = "%";
+                break;
+            case OperadorAritmetico.MENOSUNARIO:
+                opera = "-";
+                break;
+        }
+        let nodo: nodoAST = new nodoAST("Aritmetica");
+        if (this.opU != null) {
+            nodo.addHijo(opera);
+            nodo.adddHijo(this.opU.getNodo());
+        }
+        else {
+            if (this.op1 && this.op2) {
+                nodo.adddHijo(this.op1.getNodo());
+                nodo.addHijo(opera);
+                nodo.adddHijo(this.op2.getNodo());
+            }
+        }
+        return nodo;
     }
 
 }

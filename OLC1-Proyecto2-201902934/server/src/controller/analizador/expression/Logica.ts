@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Arbol from '../tablaSimbolos/Arbol';
 import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
@@ -30,15 +31,15 @@ export default class Logica extends Instruccion {
         var left = null, right = null, unario = null, p1 = null, p2 = null, pu = null;
 
         if (this.opU == (null || undefined)) {
-            left = this.op1?.interpretar(tree, table);
-            if (left instanceof Excepcion) return left;
-            left = left.value;
             p1 = this.op1?.interpretar(tree, table);
+            if (p1 instanceof Excepcion) return p1;
+            left = p1.value;
+            //p1 = this.op1?.interpretar(tree, table);
 
-            right = this.op2?.interpretar(tree, table);
-            if (right instanceof Excepcion) return right;
-            right = right.value;
             p2 = this.op2?.interpretar(tree, table);
+            if (p2 instanceof Excepcion) return p2;
+            right = p2.value;
+            //p2 = this.op2?.interpretar(tree, table);
             try {
                 if (left.toLowerCase() == "true") {
                     left = true;
@@ -53,10 +54,10 @@ export default class Logica extends Instruccion {
             } catch { }
         }
         else {
-            unario = this.opU.interpretar(tree, table);
-            if (unario instanceof Excepcion) return unario;
-            unario = unario.value
             pu = this.opU.interpretar(tree, table);
+            if (pu instanceof Excepcion) return pu;
+            unario = pu.value
+            //pu = this.opU.interpretar(tree, table);
             try {
                 if (unario.toLowerCase() == "true") {
                     unario = true;
@@ -109,6 +110,33 @@ export default class Logica extends Instruccion {
 
     public retorno(result: any) {
         return new Primitivo(this.tipo, result, this.line, this.column);
+    }
+
+    public getNodo(): nodoAST {
+        var opera = "";
+        if (null != this.operador) switch (this.operador) {
+            case OperadorLogico.AND:
+                opera = "&&";
+                break;
+            case OperadorLogico.OR:
+                opera = "||";
+                break;
+            case OperadorLogico.NOT:
+                opera = "!";
+                break;
+        }
+        let nodo: nodoAST = new nodoAST("Logico");
+        if (this.opU != null) {
+            nodo.addHijo(opera);
+            nodo.adddHijo(this.opU.getNodo());
+        } else {
+            if (this.op1 && this.op2) {
+                nodo.adddHijo(this.op1.getNodo());
+                nodo.addHijo(opera);
+                nodo.adddHijo(this.op2.getNodo());
+            }
+        }
+        return nodo;
     }
 
 }
