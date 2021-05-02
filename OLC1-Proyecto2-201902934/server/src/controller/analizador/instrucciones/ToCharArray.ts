@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
@@ -36,5 +37,18 @@ export default class ToCharArray extends Instruccion {
         lista = Array.from(valor.value);
         var sim = new Simbolo(new Tipo(tipos.CARACTER), this.id, lista, new Tipo(tipos.LISTA));
         table.setVariable(sim);
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("toCharArray");
+        nodo.addHijo("List");
+        nodo.addHijo("<");
+        nodo.addHijo("char");
+        nodo.addHijo(">");
+        nodo.addHijo(this.id);
+        nodo.addHijo("=");
+        nodo.adddHijo(this.express.getNodo());
+        nodo.addHijo(";")
+        return nodo;
     }
 }

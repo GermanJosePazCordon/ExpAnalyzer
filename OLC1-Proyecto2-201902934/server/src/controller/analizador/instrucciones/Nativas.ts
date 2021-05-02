@@ -5,6 +5,7 @@ import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
 import Tipo, { tipos } from '../tablaSimbolos/Tipo';
 import Primitivo from '../expression/Primitiva';
 import Variable from '../expression/Variable';
+import { nodoAST } from '../abstract/NodoAST';
 
 export default class Nativas extends Instruccion {
 
@@ -117,6 +118,38 @@ export default class Nativas extends Instruccion {
             default:
                 return new Excepcion("Semántico", "Tipo de funcion no valido", this.line, this.column);
         }
+    }
+
+    public getNodo() : nodoAST{
+        var opera = "";
+        if (null != this.operador) switch (this.operador) {
+            case OperadorNativas.LENGTH:
+                opera = "Length";
+                break;
+            case OperadorNativas.ROUND:
+                opera = "Round";
+                break;
+            case OperadorNativas.TOLOWER:
+                opera = "toLower";
+                break;
+            case OperadorNativas.TOSTRING:
+                opera = "toString";
+                break;
+            case OperadorNativas.TOUPPER:
+                opera = "toUpper";
+                break;
+            case OperadorNativas.TRUNCATE:
+                opera = "Truncate";
+                break;
+            case OperadorNativas.TYPEOF:
+                opera = "typeOf";
+                break;
+        }
+        let nodo : nodoAST = new nodoAST(opera);
+        nodo.addHijo("(");
+        nodo.adddHijo(this.express.getNodo());
+        nodo.addHijo(")");
+        return nodo;
     }
 
 }

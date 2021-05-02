@@ -59,6 +59,8 @@
 "new"               return 'NEW';
 "add"               return 'ADD';
 
+"exec"              return 'EXEC';
+
 
 ";"                 return 'PTCOMA';
 ":"                 return 'DBPUNTO';
@@ -97,8 +99,8 @@
 "}"                 return 'LLADER';
 
 
-\"[^\"]*\"				        { yytext = yytext.substr(1,yyleng-2); 	return 'CADENA'; }
-\'[^\"]\'				        { yytext = yytext.substr(1,yyleng-2); 	return 'CARACTER'; }
+\"(\\\"|\\n|\\t|\\r|\\\\|[^\"])*\"                { yytext = escapes(yytext.substr(1,yyleng-2)); 	return 'CADENA'; }
+[\']([^\t\'\"\n]|(\\\")|(\\n)|(\\\')|(\\t))?[\']  { yytext = escapes(yytext.substr(1,yyleng-2)); 	return 'CARACTER'; }
 [0-9]+("."[0-9]+)\b             return 'DECIMAL';
 [0-9]+\b                        return 'ENTERO';
 ([a-zA-Z])[a-zA-Z0-9_]*         return 'IDENTIFICADOR';
@@ -151,6 +153,17 @@
     const AcLista = require('./instrucciones/AccesoLista');
     const MLista = require('./instrucciones/ModificarLista');
     const ToCharArray = require('./instrucciones/ToCharArray');
+    const Exect = require('./instrucciones/Exec');
+
+    function escapes(sec){
+        sec = sec.replace(/\\n/g, '\n');
+        sec = sec.replace(/\\\\/g, '\\');
+        sec = sec.replace(/\\\"/g, '\"');
+        sec = sec.replace(/\\t/g, '\t');
+        sec = sec.replace(/\\\'/g, '\'');
+        return sec;
+    }
+
 
 %}
 
@@ -204,6 +217,7 @@ INSTRUCCION
     | DLISTA                { $$ = $1; }
     | ALISTA                { $$ = $1; }
     | MLISTA                { $$ = $1; }
+    | LLAMADAEXEC           { $$ = $1; }
 	| error           { console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); }
 ;
 
@@ -339,6 +353,11 @@ MLISTA
     : IDENTIFICADOR CORIZQ CORIZQ EXPRESION CORDER CORDER IGUAL EXPRESION PTCOMA  { $$ = new MLista.default(@1.first_line, @1.first_column, $1, $4, $8); }
 ;
 
+LLAMADAEXEC
+    : EXEC IDENTIFICADOR PARIZQ PARAMETROS_LLAMADA PARDER PTCOMA    { $$ = new Exect.default(@1.first_line, @1.first_column, $2, $4); }
+    | EXEC IDENTIFICADOR PARIZQ PARDER PTCOMA                       { $$ = new Exect.default(@1.first_line, @1.first_column, $2, null); }
+;
+
 EXPRESION
     : EXPRESION MAS EXPRESION               { $$ = new Aritmetica.default( Aritmetica.OperadorAritmetico.SUMA, @1.first_line, @1.first_column, $1, $3); }
     | EXPRESION MENOS EXPRESION             { $$ = new Aritmetica.default( Aritmetica.OperadorAritmetico.RESTA, @1.first_line, @1.first_column, $1, $3); }
@@ -377,8 +396,8 @@ EXPRESION
     | TYPEOF PARIZQ EXPRESION PARDER         { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TYPEOF, $3); }
     | TOSTRING PARIZQ EXPRESION PARDER       { $$ = new Nativas.default(@1.first_line, @1.first_column, Nativas.OperadorNativas.TOSTRING, $3); }
     | EXPRESION INTERROGACION EXPRESION DBPUNTO EXPRESION    { $$ = new Ternario.default(@1.first_line, @1.first_column, $1, $3, $5); }
-    | IDENTIFICADOR CORIZQ EXPRESION CORDER     { $$ = new AVector.default(@1.first_line, @1.first_column, $1, $3); }
-    | IDENTIFICADOR CORIZQ CORIZQ EXPRESION CORDER CORDER     { $$ = new AcLista.default(@1.first_line, @1.first_column, $1, $4); }
+    | IDENTIFICADOR CORIZQ EXPRESION CORDER                  { $$ = new AVector.default(@1.first_line, @1.first_column, $1, $3); }
+    | IDENTIFICADOR CORIZQ CORIZQ EXPRESION CORDER CORDER    { $$ = new AcLista.default(@1.first_line, @1.first_column, $1, $4); }
 ;
 
 TIPO 

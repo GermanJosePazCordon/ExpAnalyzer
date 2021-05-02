@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
@@ -39,5 +40,15 @@ export default class Ternario extends Instruccion {
             
             return new Primitivo(expre2.tipo, expre2.value, this.line, this.column);
         }
+    }
+    
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Operador\nTernario");
+        nodo.adddHijo(this.condicion.getNodo());
+        nodo.addHijo("?");
+        nodo.adddHijo(this.express1.getNodo());
+        nodo.addHijo(":");
+        nodo.adddHijo(this.express2.getNodo());
+        return nodo;
     }
 }

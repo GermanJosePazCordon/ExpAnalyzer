@@ -27,12 +27,19 @@ export default class Asignacion extends Instruccion{
         if(table.getVariable(this.id.toLowerCase()) != null){
             var variables = table.getVariable(this.id);
             if(variables){
-                //console.log(valor);
-                if(variables.getTipo().getTipo() == valor.tipo.getTipo()){
-                    //console.log(valor);
-                    variables.setValue(valor.value);
+                if(variables.getTipo().getTipo() == tipos.DECIMAL){
+                    if(valor.tipo.getTipo() == tipos.ENTERO || valor.tipo.getTipo() == tipos.DECIMAL){
+                        variables.setValue(valor.value);
+                    }else{
+                        
+                        return new Excepcion("Semántico","Tipos incompatibles",this.line,this.column);
+                    }
                 }else{
-                    return new Excepcion("Semántico","Tipos incompatibles",this.line,this.column);
+                    if(variables.getTipo().getTipo() == valor.tipo.getTipo()){
+                        variables.setValue(valor.value);
+                    }else{
+                        return new Excepcion("Semántico","Tipos incompatibles",this.line,this.column);
+                    }
                 }
             }
         }
@@ -42,14 +49,10 @@ export default class Asignacion extends Instruccion{
     }
 
     public getNodo() : nodoAST{
-        let nodo : nodoAST = new nodoAST("Asigar Variable");
+        let nodo : nodoAST = new nodoAST("Asigar\nVariable");
         nodo.addHijo(this.id);
         nodo.addHijo("=");
-        if(this.value instanceof Primitivo){
-            nodo.adddHijo(this.value.getNodo()); 
-        }else{
-            nodo.addHijo(this.value.toString()); 
-        }
+        nodo.adddHijo(this.value.getNodo());
         nodo.addHijo(";"); 
         return nodo;
     }

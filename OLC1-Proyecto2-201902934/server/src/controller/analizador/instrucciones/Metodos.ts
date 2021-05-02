@@ -6,6 +6,7 @@ import Tipo, { tipos } from '../tablaSimbolos/Tipo';
 import Parametros from './Parametros';
 import Declaracion from './Declaracion';
 import Simbolo from '../tablaSimbolos/Simbolo';
+import { nodoAST } from '../abstract/NodoAST';
 
 export default class Metodos extends Instruccion {
 
@@ -41,6 +42,26 @@ export default class Metodos extends Instruccion {
                 table.setVariable(sim);
             }
         }
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Metodo");
+        nodo.addHijo("Void");
+        let temp = this.id.split("2776871601601");
+        nodo.addHijo(temp[0] + "\n" + "2776871601601");
+        nodo.addHijo("(");
+        if(this.parametros.length != 0){
+            for(let i of this.parametros){
+                nodo.adddHijo(i.getNodo())
+            }
+        }
+        nodo.addHijo(")");
+        nodo.addHijo("{");
+        for(let i of this.instrucciones){
+            nodo.adddHijo(i.getNodo())
+        }
+        nodo.addHijo("}");
+        return nodo;
     }
 }
 

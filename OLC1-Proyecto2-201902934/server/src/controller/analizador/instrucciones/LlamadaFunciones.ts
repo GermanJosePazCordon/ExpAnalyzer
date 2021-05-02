@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Primitivo from '../expression/Primitiva';
 import Variable from '../expression/Variable';
@@ -24,20 +25,18 @@ export default class LlamadaFunciones extends Instruccion {
     }
 
     public interpretar(ast: Arbol, table: tablaSimbolos) {
-       // console.log(this.parametros)
-        //setTimeout(() => { console.log("World!"); }, 5000);
         var metodo = false;
         var retono = false;
         var funcion = table.getVariable(this.id);
         if (funcion) {
-            if(funcion.getTipo().getTipo() == tipos.METODO){
+            if (funcion.getTipo().getTipo() == tipos.METODO) {
                 metodo = true;
             }
             var parametrosFun = funcion.getValue().parametros;
             var instrucciones = funcion.getValue().instrucciones;
             if (this.parametros.length == parametrosFun.length) {
-                
-                
+
+
             } else {
                 return new Excepcion("Semántico", "Numero de parametros incorrecto", this.line, this.column);
             }
@@ -49,16 +48,12 @@ export default class LlamadaFunciones extends Instruccion {
                 var sim = new Simbolo(new Tipo(parametrosFun[i].getTipo()), parametrosFun[i].getID(), valor.value);
                 tabla.setVariable(sim);
             }
-            
             for (let m of instrucciones) {
-                
                 var result = m.interpretar(ast, tabla);
-                
                 if (result instanceof Excepcion) { // ERRORES SINTACTICOS
-                    //Errors.push(result);
                     ast.updateConsola((<Excepcion>result).toString());
                 }
-                if(!metodo){
+                if (!metodo) {
                     if (result instanceof Return) {
                         retono = true;
                         return new Excepcion("Semántico", "Tipo de retorno invalido", this.line, this.column);
@@ -67,24 +62,23 @@ export default class LlamadaFunciones extends Instruccion {
                         retono = true;
                         if (funcion.getValue().tipo.getTipo() == result.tipo.getTipo()) {
                             return result;
-                        }else{
+                        } else {
                             return new Excepcion("Semántico", "Tipo de retorno invalido", this.line, this.column);
                         }
                     }
-                }else{
+                } else {
                     if (result instanceof Return) {
                         retono = true;
                         return;
                     }
-                    //console.log(result);
                     if (result instanceof Primitivo) {
                         retono = true;
                         return;
                     }
                 }
-            } 
-            if(!metodo){
-                if(!retono){
+            }
+            if (!metodo) {
+                if (!retono) {
                     return new Excepcion("Semántico", "Funcion sin retorno", this.line, this.column);
                 }
             }
@@ -118,6 +112,20 @@ export default class LlamadaFunciones extends Instruccion {
         } else {
             return false;
         }
+    }
+
+    public getNodo(): nodoAST {
+        let nodo: nodoAST = new nodoAST("Llamada");
+        let temp = this.id.split("2776871601601");
+        nodo.addHijo(temp[0] + "\n" + "2776871601601");
+        nodo.addHijo("(");
+        if (this.parametros.length != 0) {
+            for (let i of this.parametros) {
+                nodo.adddHijo(i.getNodo())
+            }
+        }
+        nodo.addHijo(")");
+        return nodo;
     }
 }
 

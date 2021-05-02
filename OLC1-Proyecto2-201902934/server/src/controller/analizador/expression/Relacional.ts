@@ -39,14 +39,14 @@ export default class Relacional extends Instruccion {
 
         if (p1.tipo.getTipo() == tipos.BOOLEAN) {
             if(left.toString().toLowerCase() == "true"){
-                left = true
+                left = true;
             }else{
                 left = false;
             }
         }
         if (p2.tipo.getTipo() == tipos.BOOLEAN) {
             if(right.toString().toLowerCase() == "true"){
-                right = true
+                right = true;
             }else{
                 right = false;
             }
@@ -206,6 +206,7 @@ export default class Relacional extends Instruccion {
                 break;
             case OperadorRelacional.IGUALACION:
                 if (p1.tipo.getTipo() == tipos.ENTERO && p2.tipo.getTipo() == tipos.ENTERO) {
+                    debugger;
                     return this.retorno(parseInt(left) == parseInt(right));
                 }
                 else if (p1.tipo.getTipo() == tipos.ENTERO && p2.tipo.getTipo() == tipos.DECIMAL) {

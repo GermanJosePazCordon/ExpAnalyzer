@@ -44,7 +44,6 @@ export default class MasMas extends Instruccion {
             if (this.express) {
                 valor = this.express?.interpretar(tree, table);
                 if (valor instanceof Excepcion) return valor;
-                //console.log(valor);
             }
             if (valor.tipo.getTipo() == tipos.ENTERO) {
                 this.tipo = new Tipo(tipos.ENTERO);
@@ -64,6 +63,7 @@ export default class MasMas extends Instruccion {
     public getNodo() : nodoAST{
         let nodo : nodoAST = new nodoAST("Incremento");
         nodo.adddHijo(this.express.getNodo());
+        nodo.addHijo("++");
         return nodo;
     }
 

@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
@@ -29,5 +30,40 @@ export default class DeclararLista extends Instruccion {
         let lista = new Array();
         var sim = new Simbolo(new Tipo(this.tipo1), this.id, lista, new Tipo(tipos.LISTA));
         table.setVariable(sim);
+    }
+
+    public getNodo() : nodoAST{
+        var opera = "";
+        if (null != this.tipo1) switch (this.tipo1) {
+            case 0:
+                opera = "int";
+                break;
+            case 1:
+                opera = "double";
+                break;
+            case 2:
+                opera = "char";
+                break;
+            case 3:
+                opera = "boolean";
+                break;
+            case 4:
+                opera = "string";
+                break;
+        }
+        let nodo : nodoAST = new nodoAST("Declarar\nLista");
+        nodo.addHijo("List");
+        nodo.addHijo("<");
+        nodo.addHijo(opera);
+        nodo.addHijo(">");
+        nodo.addHijo(this.id);
+        nodo.addHijo("=");
+        nodo.addHijo("New");
+        nodo.addHijo("List");
+        nodo.addHijo("<");
+        nodo.addHijo(opera);
+        nodo.addHijo(">");
+        nodo.addHijo(";");
+        return nodo;
     }
 }

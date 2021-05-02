@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
@@ -61,6 +62,23 @@ export default class DoWhile extends Instruccion {
                 break;
             }
         } while (condicion);
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Sentencia\nCiclica");
+        nodo.addHijo("Do");
+        nodo.addHijo("{");
+        let nodo1 : nodoAST = new nodoAST("Instrucciones");
+        for(let i of this.listaInstruccion){
+            nodo1.adddHijo(i.getNodo())
+        }
+        nodo.adddHijo(nodo1);
+        nodo.addHijo("}");
+        nodo.addHijo("While");
+        nodo.addHijo("(");
+        nodo.adddHijo(this.express.getNodo());
+        nodo.addHijo(")");
+        return nodo;
     }
 
 }

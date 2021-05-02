@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
@@ -36,5 +37,16 @@ export default class AccesoLista extends Instruccion {
         }else{
             return new Excepcion("Semántico", "Lista no declarado", this.line, this.column);
         }
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Acceso\nLista");
+        nodo.addHijo(this.id);
+        nodo.addHijo("[");
+        nodo.addHijo("[");
+        nodo.adddHijo(this.express.getNodo());
+        nodo.addHijo("]");
+        nodo.addHijo("]");
+        return nodo;
     }
 }

@@ -8,6 +8,7 @@ import Break from './Break';
 import Continue from './Continue';
 import Return from './Return';
 import Primitivo from '../expression/Primitiva';
+import { nodoAST } from '../abstract/NodoAST';
 
 export default class Switch extends Instruccion {
 
@@ -61,12 +62,22 @@ export default class Switch extends Instruccion {
             }
         }
         else if (this.listaCases.length > 0) {
+            breakk = false;
             var result = this.express.interpretar(ast, table);
             for (let i of this.listaCases) {
                 var condicion = i.getExpresion().interpretar(ast, table);
                 var instruccion = i.getInstrucciones();
                 if(condicion.value == result.value){
+                    for(let j of instruccion){
+                        if(j instanceof Break){
+                            breakk = true;
+                            break;
+                        }
+                    }
                     this.ejecutar(ast, table, instruccion);
+                }
+                if(breakk){
+                    break;
                 }
             }
         }
@@ -88,10 +99,10 @@ export default class Switch extends Instruccion {
                 ast.updateConsola((<Excepcion>result).toString());
                 
             }
-            /*if(result instanceof Break){
+            if(result instanceof Break){
                 break;
             }
-            if(result instanceof Continue){
+            /*if(result instanceof Continue){
                 break;
             }*/
             if(result instanceof Return){
@@ -101,6 +112,31 @@ export default class Switch extends Instruccion {
                 return result;
             }
         }
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Sentencia\nControl");
+        nodo.addHijo("Switch");
+        nodo.addHijo("(");
+        nodo.adddHijo(this.express.getNodo());
+        nodo.addHijo(")");
+        nodo.addHijo("{");
+        let nodo1 : nodoAST = new nodoAST("Lista\nCase");
+        let nodo2 : nodoAST = new nodoAST("Default");
+        if(this.listaCases.length > 0){
+            for(let i of this.listaCases){
+                nodo1.adddHijo(i.getNodo());
+            }
+            nodo.adddHijo(nodo1);
+        }
+        if(this.listaDefault.length > 0){
+            for(let i of this.listaDefault){
+                nodo2.adddHijo(i.getNodo());
+            } 
+            nodo.adddHijo(nodo2);
+        }
+        nodo.addHijo("}");
+        return nodo;
     }
 
 }

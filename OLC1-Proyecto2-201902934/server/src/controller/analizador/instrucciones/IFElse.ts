@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
@@ -63,6 +64,30 @@ export default class IFElse extends Instruccion {
                 return result;
             }
         }
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Sentencia\nControl");
+        nodo.addHijo("If");
+        nodo.addHijo("(");
+        nodo.adddHijo(this.express.getNodo());
+        nodo.addHijo(")");
+        nodo.addHijo("{");
+        let nodo1 : nodoAST = new nodoAST("Instrucciones");
+        for(let i of this.lista){
+            nodo1.adddHijo(i.getNodo())
+        }
+        nodo.adddHijo(nodo1);
+        nodo.addHijo("}");
+        nodo.addHijo("Else");
+        nodo.addHijo("{");
+        let nodo2 : nodoAST = new nodoAST("Instrucciones");
+        for(let i of this.lista2){
+            nodo2.adddHijo(i.getNodo())
+        }
+        nodo.adddHijo(nodo2);
+        nodo.addHijo("}");
+        return nodo;
     }
 
 }

@@ -269,14 +269,6 @@ export default class Aritmetica extends Instruccion {
                 }
                 break;
             case OperadorAritmetico.MULTIPLICACION:
-                //console.log("--------------")
-                //console.log("MULTI")
-                //console.log(p1)
-                //console.log(p2)
-                //console.log("RESULTADO")
-                ///console.log(this.retorno(left * right))
-                //console.log("--------------")
-                // stop;
                 if (p1.tipo.getTipo() == tipos.ENTERO) { // Entero * algo
                     if (p2.tipo.getTipo() == tipos.ENTERO) {
                         this.tipo = new Tipo(tipos.ENTERO);
@@ -474,7 +466,7 @@ export default class Aritmetica extends Instruccion {
     }
 
     public retorno(result: any) {
-        return new Primitivo(this.tipo, result, this.line, this.column);
+        return new Primitivo(this.tipo, result.toString(), this.line, this.column);
     }
 
     public getNodo(): nodoAST {

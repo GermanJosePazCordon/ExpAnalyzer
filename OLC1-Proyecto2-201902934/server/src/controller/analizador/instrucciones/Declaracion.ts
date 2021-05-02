@@ -46,8 +46,8 @@ export default class Declaracion extends Instruccion{
                     }
                     break;
                 case OperadorDeclaracion.DECIMAL:
-                    if(tipos.DECIMAL == valor.tipo.getTipo()){
-                        if(this.existe(table, valor.tipo, valor.value)){
+                    if(tipos.DECIMAL == valor.tipo.getTipo() || tipos.ENTERO == valor.tipo.getTipo()){
+                        if(this.existe(table, new Tipo(tipos.DECIMAL), valor.value)){
                             return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column);
                         }
                         table.setVariable( new Simbolo(valor.tipo, this.id, valor.value));
@@ -145,7 +145,7 @@ export default class Declaracion extends Instruccion{
     }
 
     public getNodo() : nodoAST{
-        let nodo : nodoAST = new nodoAST("Declarar Variable");
+        let nodo : nodoAST = new nodoAST("Declarar\nVariable");
         var opera = "";
         if (null != this.operador) switch (this.operador) {
             case OperadorDeclaracion.BOOLEAN:
@@ -168,11 +168,8 @@ export default class Declaracion extends Instruccion{
         nodo.addHijo(this.id);
         if(this.value){
             nodo.addHijo("=");
-            if(this.value instanceof Primitivo){
-                nodo.adddHijo(this.value.getNodo()); 
-            }else{
-                nodo.addHijo(this.value.toString()); 
-            }
+            //console.log(this.value)
+            nodo.adddHijo(this.value.getNodo());
         }
         nodo.addHijo(";");
         return nodo;

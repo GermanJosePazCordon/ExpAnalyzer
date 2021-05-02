@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
@@ -36,5 +37,14 @@ export default class AccesoVector extends Instruccion {
         }else{
             return new Excepcion("Semántico", "Vector no declarado", this.line, this.column);
         }
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Acceso\nVector");
+        nodo.addHijo(this.id);
+        nodo.addHijo("[");
+        nodo.adddHijo(this.express.getNodo());
+        nodo.addHijo("]");
+        return nodo;
     }
 }

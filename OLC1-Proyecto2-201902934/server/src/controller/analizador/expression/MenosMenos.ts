@@ -41,7 +41,7 @@ export default class MenosMenos extends Instruccion {
             if (this.express) {
                 valor = this.express?.interpretar(tree, table);
                 if (valor instanceof Excepcion) return valor;
-                //console.log(valor);
+
             }
             if (valor.tipo.getTipo() == tipos.ENTERO) {
                 this.tipo = new Tipo(tipos.ENTERO);
@@ -61,6 +61,7 @@ export default class MenosMenos extends Instruccion {
     public getNodo() : nodoAST{
         let nodo : nodoAST = new nodoAST("Decremento");
         nodo.adddHijo(this.express.getNodo());
+        nodo.addHijo("--");
         return nodo;
     }
 

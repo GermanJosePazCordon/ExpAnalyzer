@@ -30,7 +30,12 @@ export default class Case extends Instruccion {
     public getNodo() : nodoAST{
         let nodo : nodoAST = new nodoAST("Case");
         nodo.adddHijo(this.express.getNodo());
-        nodo.addHijo("lista de instrucciones");
+        nodo.addHijo(":");
+        let nodo1 : nodoAST = new nodoAST("Instrucciones");
+        for(let i of  this.listaInstruccion){
+            nodo1.adddHijo(i.getNodo());
+        }
+        nodo.adddHijo(nodo1);
         return nodo;
     }
 

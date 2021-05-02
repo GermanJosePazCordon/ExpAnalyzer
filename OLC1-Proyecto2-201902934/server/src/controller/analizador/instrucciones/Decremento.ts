@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Arbol from '../tablaSimbolos/Arbol';
 import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
@@ -32,6 +33,13 @@ export default class Decremento extends Instruccion {
             return new Excepcion("Semántico","Variable no existe",this.line,this.column);
         }
 
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Decremento");
+        nodo.addHijo(this.express);
+        nodo.addHijo("--");
+        return nodo;
     }
 
 }

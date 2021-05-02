@@ -36,6 +36,7 @@ export default class Incremento extends Instruccion {
     public getNodo() : nodoAST{
         let nodo : nodoAST = new nodoAST("Incremento");
         nodo.addHijo(this.express);
+        nodo.addHijo("++");
         return nodo;
     }
 

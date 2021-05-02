@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
@@ -87,5 +88,48 @@ export default class DeclararVector extends Instruccion {
             }
             return vector;
         }
+    }
+
+    public getNodo() : nodoAST{
+        var opera = "";
+        if (null != this.tipo1) switch (this.tipo1) {
+            case 0:
+                opera = "int";
+                break;
+            case 1:
+                opera = "double";
+                break;
+            case 2:
+                opera = "char";
+                break;
+            case 3:
+                opera = "boolean";
+                break;
+            case 4:
+                opera = "string";
+                break;
+        }
+        let nodo : nodoAST = new nodoAST("Declarar\nVector");
+        nodo.addHijo(opera);
+        nodo.addHijo("[    ]");
+        nodo.addHijo(this.id);
+        nodo.addHijo("=");
+        if(this.listaValores.length == 0){
+            nodo.addHijo("new");
+            nodo.addHijo(opera);
+            nodo.addHijo("[");
+            if(this.express){
+                nodo.adddHijo(this.express.getNodo());
+            }
+            nodo.addHijo("]");
+            nodo.addHijo(";");
+        }else{
+            nodo.addHijo("{");
+            for(let i of this.listaValores){
+                nodo.adddHijo(i.getNodo())
+            }
+            nodo.addHijo("}");
+        }
+        return nodo;
     }
 }

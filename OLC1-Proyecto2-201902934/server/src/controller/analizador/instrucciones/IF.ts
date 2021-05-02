@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
@@ -53,5 +54,21 @@ export default class IF extends Instruccion {
                 }
             }
         }
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Sentencia\nControl");
+        nodo.addHijo("IF");
+        nodo.addHijo("(");
+        nodo.adddHijo(this.condicion.getNodo());
+        nodo.addHijo(")");
+        nodo.addHijo("{");
+        let nodo1 : nodoAST = new nodoAST("Instrucciones");
+        for(let i of this.listaInstruccion){
+            nodo1.adddHijo(i.getNodo())
+        }
+        nodo.adddHijo(nodo1);
+        nodo.addHijo("}");
+        return nodo;
     }
 }

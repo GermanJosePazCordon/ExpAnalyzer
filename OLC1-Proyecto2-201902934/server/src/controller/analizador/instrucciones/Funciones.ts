@@ -6,6 +6,7 @@ import Tipo, { tipos } from '../tablaSimbolos/Tipo';
 import Parametros from './Parametros';
 import Declaracion from './Declaracion';
 import Simbolo from '../tablaSimbolos/Simbolo';
+import { nodoAST } from '../abstract/NodoAST';
 
 export default class Funciones extends Instruccion {
 
@@ -43,6 +44,44 @@ export default class Funciones extends Instruccion {
                 table.setVariable(sim);
             }
         }
+    }
+    
+    public getNodo() : nodoAST{
+        var opera = "";
+        if (null != this.tipoFuncion) switch (this.tipoFuncion) {
+            case 0:
+                opera = "int";
+                break;
+            case 1:
+                opera = "double";
+                break;
+            case 2:
+                opera = "char";
+                break;
+            case 3:
+                opera = "boolean";
+                break;
+            case 4:
+                opera = "string";
+                break;
+        }
+        let nodo : nodoAST = new nodoAST("Funcion");
+        nodo.addHijo(opera);
+        let temp = this.id.split("2776871601601");
+        nodo.addHijo(temp[0] + "\n" + "2776871601601");
+        nodo.addHijo("(");
+        if(this.parametros.length != 0){
+            for(let i of this.parametros){
+                nodo.adddHijo(i.getNodo())
+            }
+        }
+        nodo.addHijo(")");
+        nodo.addHijo("{");
+        for(let i of this.instrucciones){
+            nodo.adddHijo(i.getNodo())
+        }
+        nodo.addHijo("}");
+        return nodo;
     }
 }
 

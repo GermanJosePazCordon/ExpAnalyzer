@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Arbol from '../tablaSimbolos/Arbol';
 import tablaSimbolos from '../tablaSimbolos/TablaSimbolos';
 import Tipo, { tipos } from '../tablaSimbolos/Tipo';
@@ -25,6 +26,16 @@ export default class Return extends Instruccion {
             return this
         }
         
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Tranferencia");
+        nodo.addHijo("Return");
+        if(this.express){
+            nodo.adddHijo(this.express.getNodo());
+        }
+        nodo.addHijo(";");  
+        return nodo;
     }
 
 }

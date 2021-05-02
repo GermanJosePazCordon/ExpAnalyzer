@@ -126,7 +126,7 @@ export default class Casteo extends Instruccion{
         }
     }
 
-    /*public getNodo() : nodoAST{
+    public getNodo() : nodoAST{
         let nodo : nodoAST = new nodoAST("Casteo");
         var opera = "";
         if (null != this.operador) switch (this.operador) {
@@ -155,7 +155,7 @@ export default class Casteo extends Instruccion{
             nodo.addHijo(this.value.toString()); 
         }
         return nodo;
-    }*/
+    }
     
 }
 

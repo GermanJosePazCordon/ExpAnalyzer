@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
@@ -76,6 +77,40 @@ export default class ElseIF extends Instruccion {
                 c.interpretar(ast, table);
             }
         }
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Sentencia Control");
+        nodo.addHijo("If");
+        nodo.addHijo("(");
+        nodo.adddHijo(this.express.getNodo());
+        nodo.addHijo(")");
+        nodo.addHijo("{");
+        let nodo1 : nodoAST = new nodoAST("Instrucciones");
+        for(let i of this.lista){
+            nodo1.adddHijo(i.getNodo())
+        }
+        nodo.adddHijo(nodo1);
+        nodo.addHijo("}");
+        nodo.addHijo("Else");
+        nodo.addHijo("{");
+        if(this.objeto.sentencia == "IF"){
+            var a : IF;
+            a = this.objeto;
+            nodo.adddHijo(a.getNodo());
+        }
+        else if(this.objeto.sentencia == "IFELSE"){
+            var b : IFElse;
+            b = this.objeto;
+            nodo.adddHijo(b.getNodo());
+        }
+        else if(this.objeto.sentencia == "ELSEIF"){
+            var c : ElseIF;
+            c = this.objeto;
+            nodo.adddHijo(c.getNodo());
+        }
+        nodo.addHijo("}")
+        return nodo;
     }
 
 }

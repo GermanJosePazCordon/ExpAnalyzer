@@ -1,4 +1,5 @@
 import { Instruccion } from '../abstract/Instruccion';
+import { nodoAST } from '../abstract/NodoAST';
 import Excepcion from '../exception/Exception';
 import Primitivo from '../expression/Primitiva';
 import Arbol from '../tablaSimbolos/Arbol';
@@ -40,5 +41,17 @@ export default class ModificarVector extends Instruccion {
         }else{
             return new Excepcion("Semántico", "Vector no declarado", this.line, this.column);
         }
+    }
+
+    public getNodo() : nodoAST{
+        let nodo : nodoAST = new nodoAST("Modificar\nVector");
+        nodo.addHijo(this.id);
+        nodo.addHijo("[");
+        nodo.adddHijo(this.express1.getNodo());
+        nodo.addHijo("]");
+        nodo.addHijo("=");
+        nodo.adddHijo(this.express2.getNodo());
+        nodo.addHijo(";");
+        return nodo;
     }
 }
