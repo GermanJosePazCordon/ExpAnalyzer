@@ -129,6 +129,7 @@ export default class Aritmetica extends Instruccion {
                         return this.retorno(left + "" + right); // Boolean + Cadena
                     }
                     else {
+                        tree.addError(new Excepcion("Semántico", "Operandos erroneos para +", this.line, this.column));
                         return new Excepcion("Semántico", "Operandos erroneos para +", this.line, this.column);
                     }
                 }
@@ -150,6 +151,7 @@ export default class Aritmetica extends Instruccion {
                         return this.retorno(left + "" + right); // Caracter + Caracter
                     }
                     else {
+                        tree.addError(new Excepcion("Semántico", "Operandos erroneos para +", this.line, this.column));
                         return new Excepcion("Semántico", "Operandos erroneos para +", this.line, this.column);
                     }
                 }
@@ -177,6 +179,7 @@ export default class Aritmetica extends Instruccion {
                     }
                 }
                 else {
+                    tree.addError(new Excepcion("Semántico", "Operandos erroneos para +", this.line, this.column));
                     return new Excepcion("Semántico", "Operandos erroneos para +", this.line, this.column);
                 }
                 break;
@@ -204,6 +207,7 @@ export default class Aritmetica extends Instruccion {
                         return this.retorno(parseInt(left) - right.charCodeAt(0)); // Entero - Caracter
                     }
                     else {
+                        tree.addError(new Excepcion("Semántico", "Operandos erroneos para -", this.line, this.column));
                         return new Excepcion("Semántico", "Operandos erroneos para -", this.line, this.column);
                     }
                 }
@@ -229,6 +233,7 @@ export default class Aritmetica extends Instruccion {
                         return this.retorno(parseFloat(left) - right.charCodeAt(0)); // Decimal - Caracter
                     }
                     else {
+                        tree.addError(new Excepcion("Semántico", "Operandos erroneos para -", this.line, this.column));
                         return new Excepcion("Semántico", "Operandos erroneos para -", this.line, this.column);
                     }
                 }
@@ -248,6 +253,7 @@ export default class Aritmetica extends Instruccion {
                         return this.retorno(bool - parseFloat(left)); // Boolean - Decimal
                     }
                     else {
+                        tree.addError(new Excepcion("Semántico", "Operandos erroneos para -", this.line, this.column));
                         return new Excepcion("Semántico", "Operandos erroneos para -", this.line, this.column);
                     }
                 }
@@ -261,10 +267,12 @@ export default class Aritmetica extends Instruccion {
                         return this.retorno(left.charCodeAt(0) - parseFloat(right)); // Caracter - Decimal
                     }
                     else {
+                        tree.addError(new Excepcion("Semántico", "Operandos erroneos para -", this.line, this.column));
                         return new Excepcion("Semántico", "Operandos erroneos para -", this.line, this.column);
                     }
                 }
                 else {
+                    tree.addError(new Excepcion("Semántico", "Operandos erroneos para -", this.line, this.column));
                     return new Excepcion("Semántico", "Operandos erroneos para -", this.line, this.column);
                 }
                 break;
@@ -285,6 +293,7 @@ export default class Aritmetica extends Instruccion {
                         return this.retorno(parseInt(left) * right.charCodeAt(0)); // Entero * Caracter
                     }
                     else {
+                        tree.addError(new Excepcion("Semántico", "Operandos erroneos para *", this.line, this.column));
                         return new Excepcion("Semántico", "Operandos erroneos para *", this.line, this.column);
                     }
                 }
@@ -302,6 +311,7 @@ export default class Aritmetica extends Instruccion {
                         return this.retorno(parseFloat(left) * right.charCodeAt(0)); // Decimal * Caracter
                     }
                     else {
+                        tree.addError(new Excepcion("Semántico", "Operandos erroneos para *", this.line, this.column));
                         return new Excepcion("Semántico", "Operandos erroneos para *", this.line, this.column);
                     }
                 }
@@ -315,6 +325,7 @@ export default class Aritmetica extends Instruccion {
                         return this.retorno(left.charCodeAt(0) * parseFloat(right)); // Caracter * Decimal
                     }
                     else {
+                        tree.addError(new Excepcion("Semántico", "Operandos erroneos para *", this.line, this.column));
                         return new Excepcion("Semántico", "Operandos erroneos para *", this.line, this.column);
                     }
                 }
@@ -338,6 +349,7 @@ export default class Aritmetica extends Instruccion {
                             return this.retorno(parseInt(left) / right.charCodeAt(0)); // Entero / Caracter
                         }
                         else {
+                            tree.addError(new Excepcion("Semántico", "Operandos erroneos para /", this.line, this.column));
                             return new Excepcion("Semántico", "Operandos erroneos para /", this.line, this.column);
                         }
                     }
@@ -356,6 +368,7 @@ export default class Aritmetica extends Instruccion {
                             return this.retorno(parseFloat(left) / right.charCodeAt(0)); // Decimal / Caracter
                         }
                         else {
+                            tree.addError(new Excepcion("Semántico", "Operandos erroneos para /", this.line, this.column));
                             return new Excepcion("Semántico", "Operandos erroneos para /", this.line, this.column);
                         }
                     }
@@ -369,14 +382,17 @@ export default class Aritmetica extends Instruccion {
                             return this.retorno(left.charCodeAt(0) / parseFloat(right)); // Caracter / Decimal
                         }
                         else {
+                            tree.addError(new Excepcion("Semántico", "Operandos erroneos para /", this.line, this.column));
                             return new Excepcion("Semántico", "Operandos erroneos para /", this.line, this.column);
                         }
                     }
                     else {
+                        tree.addError(new Excepcion("Semántico", "Operandos erroneos para /", this.line, this.column));
                         return new Excepcion("Semántico", "Operandos erroneos para /", this.line, this.column);
                     }
                 }
                 else {
+                    tree.addError(new Excepcion("Semántico", "División entre cero", this.line, this.column));
                     return new Excepcion("Semántico", "División entre cero", this.line, this.column);
                 }
                 break;
@@ -391,6 +407,7 @@ export default class Aritmetica extends Instruccion {
                         return this.retorno(Math.pow(parseInt(left), parseFloat(right))); // Entero ^ Entero
                     }
                     else {
+                        tree.addError(new Excepcion("Semántico", "Operandos erroneos para ^", this.line, this.column));
                         return new Excepcion("Semántico", "Operandos erroneos para ^", this.line, this.column);
                     }
                 }
@@ -404,10 +421,12 @@ export default class Aritmetica extends Instruccion {
                         return this.retorno(Math.pow(parseFloat(left), parseFloat(right))); // Decimal ^ Decimal
                     }
                     else {
+                        tree.addError(new Excepcion("Semántico", "Operandos erroneos para ^", this.line, this.column));
                         return new Excepcion("Semántico", "Operandos erroneos para ^", this.line, this.column);
                     }
                 }
                 else {
+                    tree.addError(new Excepcion("Semántico", "Operandos erroneos para ^", this.line, this.column));
                     return new Excepcion("Semántico", "Operandos erroneos para ^", this.line, this.column);
                 }
                 break;
@@ -423,7 +442,8 @@ export default class Aritmetica extends Instruccion {
                             return this.retorno(parseInt(left) % parseFloat(right)); // Entero % Decimal
                         }
                         else {
-                            return new Excepcion("Semántico", "Operandos erroneos para %", this.line, this.column);
+                        tree.addError(new Excepcion("Semántico", "Operandos erroneos para %", this.line, this.column));
+                        return new Excepcion("Semántico", "Operandos erroneos para %", this.line, this.column);
                         }
                     }
                     else if (p1.tipo.getTipo() == tipos.DECIMAL) { // Decimal % algo
@@ -436,14 +456,17 @@ export default class Aritmetica extends Instruccion {
                             return this.retorno(parseFloat(left) % parseFloat(right)); // Decimal % Decimal
                         }
                         else {
-                            return new Excepcion("Semántico", "Operandos erroneos para +", this.line, this.column);
+                            tree.addError(new Excepcion("Semántico", "Operandos erroneos para %", this.line, this.column));
+                            return new Excepcion("Semántico", "Operandos erroneos para %", this.line, this.column);
                         }
                     }
                     else {
+                        tree.addError(new Excepcion("Semántico", "Operandos erroneos para %", this.line, this.column));
                         return new Excepcion("Semántico", "Operandos erroneos para %", this.line, this.column);
                     }
                 }
                 else {
+                    tree.addError(new Excepcion("Semántico", "Módulo entre cero", this.line, this.column));
                     return new Excepcion("Semántico", "Módulo entre cero", this.line, this.column);
                 }
                 break;
@@ -457,10 +480,12 @@ export default class Aritmetica extends Instruccion {
                     return this.retorno(-1 * parseFloat(unario)); // Unario Decimal 
                 }
                 else {
+                    tree.addError(new Excepcion("Semántico", "Operandos erroneos para unario", this.line, this.column));
                     return new Excepcion("Semántico", "Operandos erroneos para unario", this.line, this.column);
                 }
                 break;
             default:
+                tree.addError(new Excepcion("Semántico", "Tipo de Operación Erróneo.", this.line, this.column));
                 return new Excepcion("Semántico", "Tipo de Operación Erróneo.", this.line, this.column);
         }
     }

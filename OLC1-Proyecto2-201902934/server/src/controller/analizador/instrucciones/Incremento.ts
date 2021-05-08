@@ -26,9 +26,11 @@ export default class Incremento extends Instruccion {
                 variable.setValue(result.toString());
             }
             else{
+                tree.addError(new Excepcion("Semántico", "Tipo incompatible para incremento", this.line, this.column));
                 return new Excepcion("Semántico","Tipo incompatible para incremento",this.line,this.column);
             }
         }else{
+            tree.addError(new Excepcion("Semántico", "Variable no existe", this.line, this.column));
             return new Excepcion("Semántico","Variable no existe",this.line,this.column);
         }
     }

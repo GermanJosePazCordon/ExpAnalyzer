@@ -25,13 +25,15 @@ export default class AddLista extends Instruccion {
             valor = this.express.interpretar(tree, table);
             if (valor instanceof Excepcion) return valor;
             if(valor.tipo.getTipo() != lista.getTipo().getTipo()){
+                tree.addError(new Excepcion("Semántico", "Tipo de valor incorrecto", this.line, this.column));
                 return new Excepcion("Semántico", "Tipo de valor incorrecto", this.line, this.column);
             }
             let temp = lista.getValue();
             temp.push(valor.value);
             lista.setValue(temp);
         }else{
-            return new Excepcion("Semántico", "Lista no declarado", this.line, this.column);
+            tree.addError(new Excepcion("Semántico", "Lista no declarada", this.line, this.column));
+            return new Excepcion("Semántico", "Lista no declarada", this.line, this.column);
         }
     }
 

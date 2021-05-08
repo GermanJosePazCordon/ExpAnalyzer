@@ -32,6 +32,7 @@ export default class Casteo extends Instruccion{
                         return new Primitivo(new Tipo(tipos.ENTERO), parseInt(valor.value.charCodeAt(0)) + "", this.line, this.column);
                     }
                     else{
+                        tree.addError(new Excepcion("Semántico", "Tipos incompatibles para casteo", this.line, this.column));
                         return new Excepcion("Semántico","Tipos incompatibles para casteo",this.line,this.column);
                     }
                 case OperadorCasteo.DECIMAL:
@@ -43,6 +44,7 @@ export default class Casteo extends Instruccion{
                         return new Primitivo(new Tipo(tipos.DECIMAL),  + parseFloat(valor.value.charCodeAt(0)) + ".0", this.line, this.column);
                     }
                     else{
+                        tree.addError(new Excepcion("Semántico", "Tipos incompatibles para casteo", this.line, this.column));
                         return new Excepcion("Semántico","Tipos incompatibles para casteo",this.line,this.column);
                     }
                 case OperadorCasteo.CARACTER:
@@ -50,6 +52,7 @@ export default class Casteo extends Instruccion{
                         return new Primitivo(new Tipo(tipos.CARACTER), String.fromCharCode(valor.value), this.line, this.column);
                     }
                     else{
+                        tree.addError(new Excepcion("Semántico", "Tipos incompatibles para casteo", this.line, this.column));
                         return new Excepcion("Semántico","Tipos incompatibles para casteo",this.line,this.column);
                     }
                 case OperadorCasteo.CADENA:
@@ -60,9 +63,11 @@ export default class Casteo extends Instruccion{
                         return new Primitivo(new Tipo(tipos.CADENA), valor.value + "", this.line, this.column);
                     }
                     else{
+                        tree.addError(new Excepcion("Semántico", "Tipos incompatibles para casteo", this.line, this.column));
                         return new Excepcion("Semántico","Tipos incompatibles para casteo",this.line,this.column);
                     }
                 default:
+                    tree.addError(new Excepcion("Semántico", "Tipos incompatibles para casteo", this.line, this.column));
                     return new Excepcion("Semántico","Tipo incompatible para casteo",this.line,this.column);
             }
         }
@@ -79,6 +84,7 @@ export default class Casteo extends Instruccion{
                                 return new Primitivo(new Tipo(tipos.ENTERO), parseInt(valor.getValue().charCodeAt(0)) + "", this.line, this.column);
                             }
                             else{
+                                tree.addError(new Excepcion("Semántico", "Tipos incompatibles para casteo", this.line, this.column));
                                 return new Excepcion("Semántico","Tipos incompatibles para casteo",this.line,this.column);
                             }
                         }
@@ -92,6 +98,7 @@ export default class Casteo extends Instruccion{
                                 return new Primitivo(new Tipo(tipos.DECIMAL),  + parseFloat(valor.getValue().charCodeAt(0)) + ".0", this.line, this.column);
                             }
                             else{
+                                tree.addError(new Excepcion("Semántico", "Tipos incompatibles para casteo", this.line, this.column));
                                 return new Excepcion("Semántico","Tipos incompatibles para casteo",this.line,this.column);
                             }
                         }
@@ -101,6 +108,7 @@ export default class Casteo extends Instruccion{
                                 return new Primitivo(new Tipo(tipos.CARACTER), String.fromCharCode(valor.getValue()), this.line, this.column);
                             }
                             else{
+                                tree.addError(new Excepcion("Semántico", "Tipos incompatibles para casteo", this.line, this.column));
                                 return new Excepcion("Semántico","Tipos incompatibles para casteo",this.line,this.column);
                             }
                         }
@@ -113,14 +121,17 @@ export default class Casteo extends Instruccion{
                                 return new Primitivo(new Tipo(tipos.CADENA), valor.getValue() + "", this.line, this.column);
                             }
                             else{
+                                tree.addError(new Excepcion("Semántico", "Tipos incompatibles para casteo", this.line, this.column));
                                 return new Excepcion("Semántico","Tipos incompatibles para casteo",this.line,this.column);
                             }
                         }
                     default:
+                        tree.addError(new Excepcion("Semántico", "Tipos incompatibles para casteo", this.line, this.column));
                         return new Excepcion("Semántico","Tipo incompatible para casteo",this.line,this.column);
                 }
             }
             else{
+                tree.addError(new Excepcion("Semántico", "No existe la variable", this.line, this.column));
                 return new Excepcion("Semántico","No existe la variable",this.line,this.column);
             }
         }

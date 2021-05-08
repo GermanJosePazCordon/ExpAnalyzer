@@ -87,6 +87,7 @@ export default class Relacional extends Instruccion {
                     return this.retorno(left > right);
                 }
                 else {
+                    tree.addError(new Excepcion("Semántico", "Error en operacion entre tipos.", this.line, this.column));
                     return new Excepcion("Semántico", "Error en operacion entre tipos.", this.line, this.column);
                 }
                 break;
@@ -125,6 +126,7 @@ export default class Relacional extends Instruccion {
                     return this.retorno(left < right);
                 }
                 else {
+                    tree.addError(new Excepcion("Semántico", "Error en operacion entre tipos.", this.line, this.column));
                     return new Excepcion("Semántico", "Error en operacion entre tipos.", this.line, this.column);
                 }
                 break;
@@ -163,6 +165,7 @@ export default class Relacional extends Instruccion {
                     return this.retorno(left >= right);
                 }
                 else {
+                    tree.addError(new Excepcion("Semántico", "Error en operacion entre tipos.", this.line, this.column));
                     return new Excepcion("Semántico", "Error en operacion entre tipos.", this.line, this.column);
                 }
                 break;
@@ -201,6 +204,7 @@ export default class Relacional extends Instruccion {
                     return this.retorno(left <= right);
                 }
                 else {
+                    tree.addError(new Excepcion("Semántico", "Error en operacion entre tipos.", this.line, this.column));
                     return new Excepcion("Semántico", "Error en operacion entre tipos.", this.line, this.column);
                 }
                 break;
@@ -240,6 +244,7 @@ export default class Relacional extends Instruccion {
                     return this.retorno(left == right);
                 }
                 else {
+                    tree.addError(new Excepcion("Semántico", "Error en operacion entre tipos.", this.line, this.column));
                     return new Excepcion("Semántico", "Error en operacion entre tipos.", this.line, this.column);
                 }
                 break;
@@ -278,10 +283,12 @@ export default class Relacional extends Instruccion {
                     return this.retorno(left != right);
                 }
                 else {
+                    tree.addError(new Excepcion("Semántico", "Error en operacion entre tipos.", this.line, this.column));
                     return new Excepcion("Semántico", "Error en operacion entre tipos.", this.line, this.column);
                 }
                 break;
             default:
+                tree.addError(new Excepcion("Semántico", "Tipo de Operación Erróneo.", this.line, this.column));
                 return new Excepcion("Semántico", "Tipo de Operación Erróneo.", this.line, this.column);
         }
     }

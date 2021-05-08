@@ -15,7 +15,6 @@ export default class Decremento extends Instruccion {
     }
 
     public interpretar(tree: Arbol, table: tablaSimbolos) {
-        //console.log(this.express);
         var variable = table.getVariable(this.express);
         if(variable){
             if(variable.getTipo().getTipo() == tipos.ENTERO){
@@ -27,9 +26,11 @@ export default class Decremento extends Instruccion {
                 variable.setValue(result.toString());
             }
             else{
-                return new Excepcion("Semántico","Tipo incompatible para incremento",this.line,this.column);
+                tree.addError(new Excepcion("Semántico", "Tipo incompatible para decremento", this.line, this.column));
+                return new Excepcion("Semántico","Tipo incompatible para decremento",this.line,this.column);
             }
         }else{
+            tree.addError(new Excepcion("Semántico", "Variable no existe", this.line, this.column));
             return new Excepcion("Semántico","Variable no existe",this.line,this.column);
         }
 

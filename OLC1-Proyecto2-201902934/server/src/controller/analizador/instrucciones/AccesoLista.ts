@@ -23,19 +23,24 @@ export default class AccesoLista extends Instruccion {
         posicion = this.express?.interpretar(tree, table);
         if (posicion instanceof Excepcion) return posicion;
         if (posicion.tipo.getTipo() != tipos.ENTERO) {
-            return new Excepcion("Semántico", "Posicion de lista invalido", this.line, this.column);
+            tree.addError(new Excepcion("Semántico", "Posicion de lista invalida", this.line, this.column));
+            return new Excepcion("Semántico", "Posicion de lista invalida", this.line, this.column);
         }
         if(lista){
             if(lista.getTipoVec()?.getTipo() == tipos.VECTOR){
-                return new Excepcion("Semántico", "Lista no declarado", this.line, this.column);
+            tree.addError(new Excepcion("Semántico", "Lista no declarada", this.line, this.column));
+            return new Excepcion("Semántico", "Lista no declarada", this.line, this.column);
             }
             var valor = lista.getValue()[parseInt(posicion.value)];
+            
             if(valor == undefined){
-                return new Excepcion("Semántico", "Posicion de lista invalido", this.line, this.column);
+            tree.addError(new Excepcion("Semántico", "Posicion de lista invalida", this.line, this.column));
+            return new Excepcion("Semántico", "Posicion de lista invalida", this.line, this.column);
             }
             return new Primitivo(lista.getTipo(), valor, this.line, this.column, new Tipo(tipos.LISTA));
         }else{
-            return new Excepcion("Semántico", "Lista no declarado", this.line, this.column);
+            tree.addError(new Excepcion("Semántico", "Lista no declarada", this.line, this.column));
+            return new Excepcion("Semántico", "Lista no declarada", this.line, this.column);
         }
     }
 

@@ -8,6 +8,7 @@ import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/addon/display/autorefresh';
 import 'codemirror/mode/go/go';
+import 'codemirror/mode/cobol/cobol';
 
 if (environment.production) {
   enableProdMode();

@@ -23,18 +23,22 @@ export default class AccesoVector extends Instruccion {
         posicion = this.express?.interpretar(tree, table);
         if (posicion instanceof Excepcion) return posicion;
         if (posicion.tipo.getTipo() != tipos.ENTERO) {
+            tree.addError(new Excepcion("Semántico", "Posicion de vector invalido", this.line, this.column));
             return new Excepcion("Semántico", "Posicion de vector invalido", this.line, this.column);
         }
         if(vector){
             if(vector.getTipoVec()?.getTipo() == tipos.LISTA){
-                return new Excepcion("Semántico", "Vector no declarado", this.line, this.column);
+            tree.addError(new Excepcion("Semántico", "Vector no declarado", this.line, this.column));
+            return new Excepcion("Semántico", "Vector no declarado", this.line, this.column);
             }
             var valor = vector.getValue()[parseInt(posicion.value)];
             if(valor == undefined){
+                tree.addError(new Excepcion("Semántico", "Posicion de vector invalido", this.line, this.column));
                 return new Excepcion("Semántico", "Posicion de vector invalido", this.line, this.column);
             }
             return new Primitivo(vector.getTipo(), valor, this.line, this.column, new Tipo(tipos.VECTOR));
         }else{
+            tree.addError(new Excepcion("Semántico", "Vector no declarado", this.line, this.column));
             return new Excepcion("Semántico", "Vector no declarado", this.line, this.column);
         }
     }

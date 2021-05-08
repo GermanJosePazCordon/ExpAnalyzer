@@ -7,12 +7,14 @@ export default class tablaSimbolos
     private anterior: tablaSimbolos | any;// TABLA DE SIMBOLOS ANTERIOR
     private tipo: Tipo;
     //private funciones: Array<Func>;
+    private entorno : String;
 
     constructor(anterior?:tablaSimbolos)
     {
         this.anterior = anterior;
         this.tabla = new Map<String, Simbolo>();
         this.tipo = new Tipo(tipos.ENTERO);
+        this.entorno = "";
     }
 
     public setVariable(simbolo:Simbolo)//DECLARACION
@@ -58,6 +60,14 @@ export default class tablaSimbolos
 
     public setAnterior(Anterior: tablaSimbolos) {
         this.anterior = Anterior;
+    }
+
+    public setEntorno(entorno : String){
+        this.entorno = entorno;
+    }
+
+    public getEntorno(){
+        return this.entorno;
     }
 
 }

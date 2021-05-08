@@ -18,7 +18,9 @@ export class AppComponent {
   index  = new FormControl(0); //Variable que guarda el indice del tab actual
   listTabs : pestaña [] = []; //Lista que guarda las pestañas
   file : File = null; //Variable para guardar el evento del archivo a cargar
-  dot : String = ""; //Variable para guardar el contido del dot
+  dot : String = ""; //Variable para guardar el contido del dot del ast
+  dotTable : String = ""; //Variable para guardar el contido del dot de la tabla
+  dotErr : String = ""; //Variable para guardar el contido del dot de los errores
 
 
   interpretar : Interpretar = {
@@ -90,15 +92,25 @@ export class AppComponent {
         console.log(res);
         this.listTabs[this.index.value].console = res.valor;
         this.dot = res.dot;
+        this.dotTable = res.table;
+        this.dotErr = res.err;
       },err=>{
         console.log(err);
         this.listTabs[this.index.value].console = "NO COMPILO NADA 🥺";
       }
     );
   }
-
+  
   graphAST(){
-    graphviz("#graph").renderDot(this.dot);
+    graphviz("#graphAST").renderDot(this.dot);
+  }
+
+  graphTable(){
+    graphviz("#graphTab").renderDot(this.dotTable);
+  }
+
+  graphErr(){
+    graphviz("#graphErr").renderDot(this.dotErr);
   }
 
 }

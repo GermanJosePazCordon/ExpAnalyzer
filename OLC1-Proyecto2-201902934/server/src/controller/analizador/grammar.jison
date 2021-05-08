@@ -218,7 +218,7 @@ INSTRUCCION
     | ALISTA                { $$ = $1; }
     | MLISTA                { $$ = $1; }
     | LLAMADAEXEC           { $$ = $1; }
-	| error           { console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); }
+	| error                 { $$ = new Excepcion.default('Sintactico','No se esperaba: ' + yytext, this._$.first_line, this._$.first_column); }
 ;
 
 DEFPRINT

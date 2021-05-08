@@ -28,23 +28,31 @@ export default class IFElse extends Instruccion {
     public interpretar(tree: Arbol, table: tablaSimbolos) {
         var result = this.express.interpretar(tree, table);
         if (this.express.tipo.getTipo() != tipos.BOOLEAN) {
+            tree.addError(new Excepcion("Semántico", "Tipo de condición incorrecto", this.line, this.column));
             return new Excepcion("Semántico", "Tipo de condición incorrecto", this.line, this.column);
         }
         if (result.value) {
             var tmp = this.ejecutar(tree, table, this.lista);
-            return tmp
+            return tmp;
             //return true;
         }else{
             var tmp = this.ejecutar(tree, table, this.lista2);
-            return tmp
+            return tmp;
         }
     }
 
     public ejecutar(ast : Arbol, table : tablaSimbolos, lista : Array<Instruccion>){
         var tabla = new tablaSimbolos(table);
-        ast.setGlobal(tabla);
+        tabla.setEntorno("if else");
+        ast.addTabla(tabla);
 
         for (let m of lista) {
+            if (m instanceof Excepcion) { // ERRORES SINTACTICOS
+                //Errors.push(m);
+                ast.updateConsola((<Excepcion>m).toString());
+                ast.addError(m);
+                continue;
+            }
             var result = m.interpretar(ast, tabla);
             
             if (result instanceof Excepcion) { // ERRORES SINTACTICOS
@@ -75,6 +83,10 @@ export default class IFElse extends Instruccion {
         nodo.addHijo("{");
         let nodo1 : nodoAST = new nodoAST("Instrucciones");
         for(let i of this.lista){
+            if(i instanceof Excepcion){
+                nodo1.addHijo("Error\nSintactico");
+                continue;
+            }
             nodo1.adddHijo(i.getNodo())
         }
         nodo.adddHijo(nodo1);
@@ -83,6 +95,10 @@ export default class IFElse extends Instruccion {
         nodo.addHijo("{");
         let nodo2 : nodoAST = new nodoAST("Instrucciones");
         for(let i of this.lista2){
+            if(i instanceof Excepcion){
+                nodo2.addHijo("Error\nSintactico");
+                continue;
+            }
             nodo2.adddHijo(i.getNodo())
         }
         nodo.adddHijo(nodo2);

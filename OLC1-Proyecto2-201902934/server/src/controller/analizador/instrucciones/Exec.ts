@@ -38,7 +38,7 @@ export default class Exec extends Instruccion {
     public getNodo(): nodoAST {
         let nodo: nodoAST = new nodoAST("Exec");
         let temp = this.id.split("2776871601601");
-        nodo.addHijo(temp[0] + "\n" + "2776871601601");
+        nodo.addHijo(temp[0]);
         nodo.addHijo("(");
         if (this.parametros.length != 0) {
             for (let i of this.parametros) {

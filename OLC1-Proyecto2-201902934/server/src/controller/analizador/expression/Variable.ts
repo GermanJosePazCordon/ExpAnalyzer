@@ -24,6 +24,7 @@ export default class Variable extends Instruccion{
                 return new Primitivo(variable.getTipo(), variable.getValue(), this.line, this.column);
             }
         }else{
+            tree.addError(new Excepcion("Semántico", "No existe la variable", this.line, this.column));
             return new Excepcion("Semántico","No existe la variable",this.line,this.column);
         }
     }

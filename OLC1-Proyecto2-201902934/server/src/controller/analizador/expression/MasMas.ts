@@ -37,6 +37,7 @@ export default class MasMas extends Instruccion {
                 tmp?.setValue(result.toString());
                 return new Primitivo(valores.tipo, result, this.line, this.column);
             } else {
+                tree.addError(new Excepcion("Semántico", "Tipo no valido para incremento", this.line, this.column));
                 return new Excepcion("Semántico", "Tipo no valido para incremento", this.line, this.column);
             }
         } else {
@@ -55,6 +56,7 @@ export default class MasMas extends Instruccion {
                 var result = parseFloat(valor.value) + 1;
                 return new Primitivo(this.tipo, result, this.line, this.column);
             } else {
+                tree.addError(new Excepcion("Semántico", "Tipo no valido para incremento", this.line, this.column));
                 return new Excepcion("Semántico", "Tipo no valido para incremento", this.line, this.column);
             }
         }

@@ -34,29 +34,35 @@ export default class DeclararVector extends Instruccion {
             tamaño = this.express?.interpretar(tree, table);
             if (tamaño instanceof Excepcion) return tamaño;
             if (tamaño.tipo.getTipo() != tipos.ENTERO) {
+                tree.addError(new Excepcion("Semántico", "Tamaño de vector invalido", this.line, this.column));
                 return new Excepcion("Semántico", "Tamaño de vector invalido", this.line, this.column);
             }
             if (this.tipo1 != this.tipo2) {
+                tree.addError(new Excepcion("Semántico", "No concuerdan los tipos", this.line, this.column));
                 return new Excepcion("Semántico", "No concuerdan los tipos", this.line, this.column);
             }
             if (table.getVariable(this.id)) {
+                tree.addError(new Excepcion("Semántico", "ID utilizado en otra declaracion", this.line, this.column));
                 return new Excepcion("Semántico", "ID utilizado en otra declaracion", this.line, this.column);
             }
             let vector = new Array(parseInt(tamaño.value));
             vector = this.llenarVector(vector);
-            var sim = new Simbolo(new Tipo(this.tipo1), this.id, vector, new Tipo(tipos.VECTOR));
+            var sim = new Simbolo(this.line, this.column, new Tipo(this.tipo1), this.id, vector, new Tipo(tipos.VECTOR));
             table.setVariable(sim);
         } else {
             let vector = new Array(this.listaValores.length);
             var valor = null;
             for (let i = 0; i < vector.length; i++) {
-                if (this.listaValores[i].interpretar(tree, table).tipo.getTipo() != this.tipo1) {
-                    return new Excepcion("Semántico", "No concuerdan los tipos", this.line, this.column);
+                valor = this.listaValores[i].interpretar(tree, table);
+                if (valor instanceof Excepcion) return valor;
+                if (valor.tipo.getTipo() != this.tipo1) {
+                tree.addError(new Excepcion("Semántico", "No concuerdan los tipos", this.line, this.column));
+                return new Excepcion("Semántico", "No concuerdan los tipos", this.line, this.column);
                 }
                 valor = this.listaValores[i].interpretar(tree, table).value;
                 vector[i] = valor;
             }
-            var sim = new Simbolo(new Tipo(this.tipo1), this.id, vector, new Tipo(tipos.VECTOR));
+            var sim = new Simbolo(this.line, this.column, new Tipo(this.tipo1), this.id, vector, new Tipo(tipos.VECTOR));
             table.setVariable(sim);
         }
     }

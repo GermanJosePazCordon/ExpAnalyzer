@@ -12,7 +12,6 @@ import { nodoAST } from '../abstract/NodoAST';
 
 export default class Switch extends Instruccion {
 
-
     private express: Instruccion;
     private listaCases: Array<Case>;
     private listaDefault: Array<Instruccion>;
@@ -40,6 +39,7 @@ export default class Switch extends Instruccion {
             def = true;
             for (let i of this.listaCases) {
                 var result = this.express.interpretar(ast, table);
+                if(result instanceof Excepcion) return result;
                 if(!breakk){
                     var condicion = i.getExpresion().interpretar(ast, table);
                     var instruccion = i.getInstrucciones();
@@ -64,6 +64,7 @@ export default class Switch extends Instruccion {
         else if (this.listaCases.length > 0) {
             breakk = false;
             var result = this.express.interpretar(ast, table);
+            if(result instanceof Excepcion) return result;
             for (let i of this.listaCases) {
                 var condicion = i.getExpresion().interpretar(ast, table);
                 var instruccion = i.getInstrucciones();
@@ -92,6 +93,12 @@ export default class Switch extends Instruccion {
         ast.setGlobal(tabla);
 
         for (let m of lista) {
+            if (m instanceof Excepcion) { // ERRORES SINTACTICOS
+                //Errors.push(m);
+                ast.updateConsola((<Excepcion>m).toString());
+                ast.addError(m);
+                continue;
+            }
             var result = m.interpretar(ast, tabla);
 
             if (result instanceof Excepcion) { // ERRORES SINTACTICOS
@@ -125,12 +132,20 @@ export default class Switch extends Instruccion {
         let nodo2 : nodoAST = new nodoAST("Default");
         if(this.listaCases.length > 0){
             for(let i of this.listaCases){
+                if(i instanceof Excepcion){
+                    nodo1.addHijo("Error\nSintactico");
+                    continue;
+                }
                 nodo1.adddHijo(i.getNodo());
             }
             nodo.adddHijo(nodo1);
         }
         if(this.listaDefault.length > 0){
             for(let i of this.listaDefault){
+                if(i instanceof Excepcion){
+                    nodo2.addHijo("Error\nSintactico");
+                    continue;
+                }
                 nodo2.adddHijo(i.getNodo());
             } 
             nodo.adddHijo(nodo2);

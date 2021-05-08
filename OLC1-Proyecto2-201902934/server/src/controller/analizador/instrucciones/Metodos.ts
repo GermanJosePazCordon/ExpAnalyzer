@@ -27,6 +27,7 @@ export default class Metodos extends Instruccion {
 
     public interpretar(ast: Arbol, table: tablaSimbolos) {
         if (table.getVariable(this.id)) {
+            ast.addError(new Excepcion("Semántico", "Metodo previamente declarada", this.line, this.column));
             return new Excepcion("Semántico", "Metodo previamente declarado", this.line, this.column);
         } else {
             //Validando parametros repetidos
@@ -36,9 +37,10 @@ export default class Metodos extends Instruccion {
                 if (!unicos.includes(i.getID())) { unicos.push(elemento); }
             }
             if (unicos.length != this.parametros.length) {
+                ast.addError(new Excepcion("Semántico", "Parametros repetidos", this.line, this.column));
                 return new Excepcion("Semántico", "Parametros repetidos", this.line, this.column);
             } else {
-                var sim = new Simbolo(new Tipo(tipos.METODO), this.id, Metodo(this.parametros, this.instrucciones));
+                var sim = new Simbolo(this.line, this.column, new Tipo(tipos.METODO), this.id, Metodo(this.parametros, this.instrucciones));
                 table.setVariable(sim);
             }
         }
@@ -48,7 +50,7 @@ export default class Metodos extends Instruccion {
         let nodo : nodoAST = new nodoAST("Metodo");
         nodo.addHijo("Void");
         let temp = this.id.split("2776871601601");
-        nodo.addHijo(temp[0] + "\n" + "2776871601601");
+        nodo.addHijo(temp[0]);
         nodo.addHijo("(");
         if(this.parametros.length != 0){
             for(let i of this.parametros){
@@ -58,6 +60,10 @@ export default class Metodos extends Instruccion {
         nodo.addHijo(")");
         nodo.addHijo("{");
         for(let i of this.instrucciones){
+            if(i instanceof Excepcion){
+                nodo.addHijo("Error\nSintactico");
+                continue;
+            }
             nodo.adddHijo(i.getNodo())
         }
         nodo.addHijo("}");

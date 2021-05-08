@@ -77,6 +77,7 @@ export default class Logica extends Instruccion {
                     return this.retorno(false);
                 }
                 else {
+                    tree.addError(new Excepcion("Semántico", "Error de tipos en operacion ||.", this.line, this.column));
                     return new Excepcion("Semántico", "Error de tipos en operacion ||.", this.line, this.column);
                 }
                 break;
@@ -88,6 +89,7 @@ export default class Logica extends Instruccion {
                     return this.retorno(false);
                 }
                 else {
+                    tree.addError(new Excepcion("Semántico", "Error de tipos en operacion &&.", this.line, this.column));
                     return new Excepcion("Semántico", "Error de tipos en operacion &&.", this.line, this.column);
                 }
                 break;
@@ -100,10 +102,12 @@ export default class Logica extends Instruccion {
                     return this.retorno(true);
                 }
                 else {
+                    tree.addError(new Excepcion("Semántico", "Error de tipos en operacion !.", this.line, this.column));
                     return new Excepcion("Semántico", "Error de tipos en operacion !.", this.line, this.column);
                 }
                 break;
             default:
+                tree.addError(new Excepcion("Semántico", "Tipo de Operación Erróneo.", this.line, this.column));
                 return new Excepcion("Semántico", "Tipo de Operación Erróneo.", this.line, this.column);
         }
     }

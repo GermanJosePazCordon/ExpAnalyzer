@@ -34,7 +34,8 @@ export default class MenosMenos extends Instruccion {
                 var result = parseFloat(valores.value) - 1;
                 return new Primitivo(valores.tipo, result, this.line, this.column);
             } else {
-                return new Excepcion("Semántico", "Tipo no valido para incremento", this.line, this.column);
+                tree.addError(new Excepcion("Semántico", "Tipo no valido para decremento", this.line, this.column));
+                return new Excepcion("Semántico", "Tipo no valido para decremento", this.line, this.column);
             }
         } else {
             var valor = null;
@@ -53,7 +54,8 @@ export default class MenosMenos extends Instruccion {
                 var result = parseFloat(valor.value) - 1;
                 return new Primitivo(this.tipo, result, this.line, this.column);
             } else {
-                return new Excepcion("Semántico", "Tipo no valido para incremento", this.line, this.column);
+                tree.addError(new Excepcion("Semántico", "Tipo no valido para decremento", this.line, this.column));
+                return new Excepcion("Semántico", "Tipo no valido para decremento", this.line, this.column);
             }
         }
     }

@@ -1,0 +1,15 @@
+digraph {
+bgcolor="#060606"
+node [ fontcolor="#d0800d",  color=white, ];
+"nombre"[shape=none, margin=0, color=white, label=<
+<TABLE border="0" cellborder="1" cellspacing="10" cellpadding="4">
+<TR><TD><FONT FACE="Segoe UI">Identificador</FONT></TD><TD><FONT FACE="Segoe UI">Tipo</FONT></TD><TD><FONT FACE="Segoe UI">Tipo</FONT></TD><TD><FONT FACE="Segoe UI">Entorno</FONT></TD><TD><FONT FACE="Segoe UI">Fila</FONT></TD><TD><FONT FACE="Segoe UI">Columna</FONT></TD></TR>
+<TR><TD><FONT FACE="Segoe UI">ackermannnnnnnnnn</FONT></TD><TD><FONT FACE="Segoe UI">funcion</FONT></TD><TD><FONT FACE="Segoe UI">int</FONT></TD><TD><FONT FACE="Segoe UI">global</FONT></TD><TD><FONT FACE="Segoe UI">1</FONT></TD><TD><FONT FACE="Segoe UI">0</FONT></TD></TR>
+<TR><TD><FONT FACE="Segoe UI">main</FONT></TD><TD><FONT FACE="Segoe UI">metodo</FONT></TD><TD><FONT FACE="Segoe UI">void</FONT></TD><TD><FONT FACE="Segoe UI">global</FONT></TD><TD><FONT FACE="Segoe UI">8</FONT></TD><TD><FONT FACE="Segoe UI">0</FONT></TD></TR>
+<TR><TD><FONT FACE="Segoe UI">m</FONT></TD><TD><FONT FACE="Segoe UI">variable</FONT></TD><TD><FONT FACE="Segoe UI">int</FONT></TD><TD><FONT FACE="Segoe UI">ackermannnnnnnnnn</FONT></TD><TD><FONT FACE="Segoe UI">9</FONT></TD><TD><FONT FACE="Segoe UI">8</FONT></TD></TR>
+<TR><TD><FONT FACE="Segoe UI">n</FONT></TD><TD><FONT FACE="Segoe UI">variable</FONT></TD><TD><FONT FACE="Segoe UI">int</FONT></TD><TD><FONT FACE="Segoe UI">ackermannnnnnnnnn</FONT></TD><TD><FONT FACE="Segoe UI">9</FONT></TD><TD><FONT FACE="Segoe UI">8</FONT></TD></TR>
+<TR><TD><FONT FACE="Segoe UI">i</FONT></TD><TD><FONT FACE="Segoe UI">variable</FONT></TD><TD><FONT FACE="Segoe UI">int</FONT></TD><TD><FONT FACE="Segoe UI">for</FONT></TD><TD><FONT FACE="Segoe UI">2</FONT></TD><TD><FONT FACE="Segoe UI">6</FONT></TD></TR>
+<TR><TD><FONT FACE="Segoe UI">b</FONT></TD><TD><FONT FACE="Segoe UI">variable</FONT></TD><TD><FONT FACE="Segoe UI">int</FONT></TD><TD><FONT FACE="Segoe UI">for</FONT></TD><TD><FONT FACE="Segoe UI">3</FONT></TD><TD><FONT FACE="Segoe UI">4</FONT></TD></TR>
+</TABLE>
+>];
+}

@@ -23,16 +23,25 @@ export default class DoWhile extends Instruccion {
     public interpretar(ast: Arbol, table: tablaSimbolos) {
         var result = this.express.interpretar(ast, table);
         if (this.express.tipo.getTipo() != tipos.BOOLEAN) {
+            ast.addError(new Excepcion("Semántico", "Tipo de condición incorrecto", this.line, this.column));
             return new Excepcion("Semántico", "Tipo de condición incorrecto", this.line, this.column);
         }
         var condicion = false;
         var breakk = false
+
         do {
 
             var tabla = new tablaSimbolos(table);
-            ast.setGlobal(tabla);
+            tabla.setEntorno("do while");
+            ast.addTabla(tabla);
             
             for (let m of this.listaInstruccion) {
+                if (m instanceof Excepcion) { // ERRORES SINTACTICOS
+                    //Errors.push(m);
+                    ast.updateConsola((<Excepcion>m).toString());
+                    ast.addError(m);
+                    continue;
+                }
                 var result = m.interpretar(ast, tabla);
                 if (result instanceof Excepcion) { // ERRORES SINTACTICOS
 
@@ -52,7 +61,6 @@ export default class DoWhile extends Instruccion {
                     return result;
                 }
             }
-            //console.log(tabla.getTable());
             if(this.express.interpretar(ast, table).value.toString().toLowerCase() == "true"){
                 condicion = true;
             }else{
@@ -70,6 +78,10 @@ export default class DoWhile extends Instruccion {
         nodo.addHijo("{");
         let nodo1 : nodoAST = new nodoAST("Instrucciones");
         for(let i of this.listaInstruccion){
+            if(i instanceof Excepcion){
+                nodo1.addHijo("Error\nSintactico");
+                continue;
+            }
             nodo1.adddHijo(i.getNodo())
         }
         nodo.adddHijo(nodo1);

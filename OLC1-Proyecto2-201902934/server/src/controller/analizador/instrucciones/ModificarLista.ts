@@ -24,22 +24,30 @@ export default class ModificarLista extends Instruccion {
         posicion = this.express1?.interpretar(tree, table);
         if (posicion instanceof Excepcion) return posicion;
         if (posicion.tipo.getTipo() != tipos.ENTERO) {
-            return new Excepcion("Semántico", "Posicion de lista invalido", this.line, this.column);
+            tree.addError(new Excepcion("Semántico", "Posicion de lista invalida", this.line, this.column));
+            return new Excepcion("Semántico", "Posicion de lista invalida", this.line, this.column);
         }
         valor = this.express2?.interpretar(tree, table);
         if (valor instanceof Excepcion) return valor;
         lista = table.getVariable(this.id);
         if(lista){
             if(lista.getTipoVec()?.getTipo() == tipos.VECTOR){
-                return new Excepcion("Semántico", "Lista no declarado", this.line, this.column);
+                tree.addError(new Excepcion("Semántico", "Lista no declarada", this.line, this.column));
+                return new Excepcion("Semántico", "Lista no declarada", this.line, this.column);
             }
             if(valor.tipo.getTipo() != lista.getTipo().getTipo()){
+                tree.addError(new Excepcion("Semántico", "Tipo de valor incorrecto", this.line, this.column));
                 return new Excepcion("Semántico", "Tipo de valor incorrecto", this.line, this.column);
             }
             let temp = lista.getValue()
+            if (temp[parseInt(posicion.value)] == undefined){
+                tree.addError(new Excepcion("Semántico", "Posicion de lista invalida", this.line, this.column));
+                return new Excepcion("Semántico", "Posicion de lista invalida", this.line, this.column);
+            }
             temp[parseInt(posicion.value)] = valor.value;
         }else{
-            return new Excepcion("Semántico", "Lista no declarado", this.line, this.column);
+            tree.addError(new Excepcion("Semántico", "Lista no declarada", this.line, this.column));
+            return new Excepcion("Semántico", "Lista no declarada", this.line, this.column);
         }
     }
 

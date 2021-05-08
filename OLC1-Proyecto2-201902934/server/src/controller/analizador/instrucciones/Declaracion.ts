@@ -27,6 +27,7 @@ export default class Declaracion extends Instruccion{
     }
 
     public interpretar(tree : Arbol, table : tablaSimbolos){
+        //console.log(this.value);
         var valor = null;
         if(this.value){
             valor = this.value.interpretar(tree,table);
@@ -37,59 +38,70 @@ export default class Declaracion extends Instruccion{
                 case OperadorDeclaracion.ENTERO:
                     if(tipos.ENTERO == valor.tipo.getTipo()){
                         if(this.existe(table, valor.tipo, valor.value)){
+                            tree.addError(new Excepcion("Semántico", "Variable previamente declarada", this.line, this.column));
                             return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column);
                         }
-                        table.setVariable( new Simbolo(valor.tipo, this.id, valor.value));
+                        table.setVariable( new Simbolo(this.line, this.column, valor.tipo, this.id, valor.value));
                     }
                     else{
+                        tree.addError(new Excepcion("Semántico", "Tipos incompatibles", this.line, this.column));
                         return new Excepcion("Semántico","Tipos incompatibles",this.line,this.column);
                     }
                     break;
                 case OperadorDeclaracion.DECIMAL:
                     if(tipos.DECIMAL == valor.tipo.getTipo() || tipos.ENTERO == valor.tipo.getTipo()){
                         if(this.existe(table, new Tipo(tipos.DECIMAL), valor.value)){
+                            tree.addError(new Excepcion("Semántico", "Variable previamente declarada", this.line, this.column));
                             return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column);
                         }
-                        table.setVariable( new Simbolo(valor.tipo, this.id, valor.value));
+                        table.setVariable( new Simbolo(this.line, this.column, valor.tipo, this.id, valor.value));
                     }
                     else{
+                        tree.addError(new Excepcion("Semántico", "Tipos incompatibles", this.line, this.column));
                         return new Excepcion("Semántico","Tipos incompatibles",this.line,this.column);
                     }
                     break;
                 case OperadorDeclaracion.BOOLEAN:
                     if(tipos.BOOLEAN == valor.tipo.getTipo()){
                         if(this.existe(table, valor.tipo, valor.value)){
+                            tree.addError(new Excepcion("Semántico", "Variable previamente declarada", this.line, this.column));
                             return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column);
                         }
-                        table.setVariable( new Simbolo(valor.tipo, this.id, valor.value));
+                        table.setVariable( new Simbolo(this.line, this.column, valor.tipo, this.id, valor.value));
                     }
                     else{
+                        tree.addError(new Excepcion("Semántico", "Tipos incompatibles", this.line, this.column));
                         return new Excepcion("Semántico","Tipos incompatibles",this.line,this.column);
                     }
                     break;
                 case OperadorDeclaracion.CADENA:
                     if(tipos.CADENA == valor.tipo.getTipo()){
                         if(this.existe(table, valor.tipo, valor.value)){
+                            tree.addError(new Excepcion("Semántico", "Variable previamente declarada", this.line, this.column));
                             return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column);
                         }
-                        table.setVariable( new Simbolo(valor.tipo, this.id, valor.value));
+                        table.setVariable( new Simbolo(this.line, this.column, valor.tipo, this.id, valor.value));
                     }
                     else{
+                        tree.addError(new Excepcion("Semántico", "Tipos incompatibles", this.line, this.column));
                         return new Excepcion("Semántico","Tipos incompatibles",this.line,this.column);
                     }
                     break;
                 case OperadorDeclaracion.CARACTER:
                     if(tipos.CARACTER == valor.tipo.getTipo()){
                         if(this.existe(table, valor.tipo, valor.value)){
+                            tree.addError(new Excepcion("Semántico", "Variable previamente declarada", this.line, this.column));
                             return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column);
                         }
-                        table.setVariable( new Simbolo(valor.tipo, this.id, valor.value));
+                        table.setVariable( new Simbolo(this.line, this.column, valor.tipo, this.id, valor.value));
                     }
                     else{
+                        tree.addError(new Excepcion("Semántico", "Tipos incompatibles", this.line, this.column));
                         return new Excepcion("Semántico","Tipos incompatibles",this.line,this.column);
                     }
                     break;
                 default:
+                    tree.addError(new Excepcion("Semántico", "Tipos no existente", this.line, this.column));
                     return new Excepcion("Semántico","Tipo no existente.",this.line,this.column);
             }
         }
@@ -97,35 +109,41 @@ export default class Declaracion extends Instruccion{
             if(null != this.operador) switch (this.operador){
                 case OperadorDeclaracion.ENTERO:
                     if(this.existe(table, new Tipo(tipos.ENTERO), "0")){
+                        tree.addError(new Excepcion("Semántico", "Variable previamente declarada", this.line, this.column));
                         return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column); 
                     }
-                    table.setVariable( new Simbolo(new Tipo(tipos.ENTERO), this.id, "0"));
+                    table.setVariable( new Simbolo(this.line, this.column, new Tipo(tipos.ENTERO), this.id, "0"));
                     break;
                 case OperadorDeclaracion.DECIMAL:
                     if(this.existe(table, new Tipo(tipos.DECIMAL), "0.0")){
+                        tree.addError(new Excepcion("Semántico", "Variable previamente declarada", this.line, this.column));
                         return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column); 
                     }
-                    table.setVariable( new Simbolo(new Tipo(tipos.DECIMAL), this.id, "0.0"));
+                    table.setVariable( new Simbolo(this.line, this.column, new Tipo(tipos.DECIMAL), this.id, "0.0"));
                     break;
                 case OperadorDeclaracion.BOOLEAN:
                     if(this.existe(table, new Tipo(tipos.BOOLEAN), "true")){
+                        tree.addError(new Excepcion("Semántico", "Variable previamente declarada", this.line, this.column));
                         return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column); 
                     }
-                    table.setVariable( new Simbolo(new Tipo(tipos.BOOLEAN), this.id, "true"));
+                    table.setVariable( new Simbolo(this.line, this.column, new Tipo(tipos.BOOLEAN), this.id, "true"));
                     break;
                 case OperadorDeclaracion.CADENA:
                     if(this.existe(table, new Tipo(tipos.CADENA), '""')){
+                        tree.addError(new Excepcion("Semántico", "Variable previamente declarada", this.line, this.column));
                         return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column); 
                     }
-                    table.setVariable( new Simbolo(new Tipo(tipos.CADENA), this.id, '""'));
+                    table.setVariable( new Simbolo(this.line, this.column, new Tipo(tipos.CADENA), this.id, '""'));
                     break;
                 case OperadorDeclaracion.CARACTER:
                     if(this.existe(table, new Tipo(tipos.CARACTER), '\u0000')){
+                        tree.addError(new Excepcion("Semántico", "Variable previamente declarada", this.line, this.column));
                         return new Excepcion("Semántico","Variable previamente declarada",this.line,this.column); 
                     }
-                    table.setVariable( new Simbolo(new Tipo(tipos.CARACTER), this.id, '\u0000'));
+                    table.setVariable( new Simbolo(this.line, this.column, new Tipo(tipos.CARACTER), this.id, '\u0000'));
                     break;
                 default:
+                    tree.addError(new Excepcion("Semántico", "Tipos no existente", this.line, this.column));
                     return new Excepcion("Semántico","Tipo no existente.",this.line,this.column);
             }
         }
@@ -133,11 +151,11 @@ export default class Declaracion extends Instruccion{
 
     public existe(table : tablaSimbolos, type : Tipo, value : any){  
         if(value != null){       
-            if(table.setVariable( new Simbolo(type, this.id, value)) != "LA VARIABLE "+ this.id + " SE CREO EXITOSAMENTE."){
+            if(table.setVariable( new Simbolo(this.line, this.column, type, this.id, value)) != "LA VARIABLE "+ this.id + " SE CREO EXITOSAMENTE."){
                 return true;   
             }
         }else{
-            if(table.setVariable( new Simbolo(type, this.id, value)) != "LA VARIABLE "+ this.id + " SE CREO EXITOSAMENTE."){
+            if(table.setVariable( new Simbolo(this.line, this.column, type, this.id, value)) != "LA VARIABLE "+ this.id + " SE CREO EXITOSAMENTE."){
                 return true;
             }
         }
@@ -168,7 +186,6 @@ export default class Declaracion extends Instruccion{
         nodo.addHijo(this.id);
         if(this.value){
             nodo.addHijo("=");
-            //console.log(this.value)
             nodo.adddHijo(this.value.getNodo());
         }
         nodo.addHijo(";");

@@ -26,7 +26,10 @@
             <button type="button" class="btn btn-secondary" (click)="graphAST()">AST</button>
         </li>
         <li class="nav-item">
-            <button type="button" class="btn btn-secondary">Grammar</button>
+            <button type="button" class="btn btn-secondary" (click)="graphTable()">Table</button>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="btn btn-secondary" (click)="graphErr()">Error</button>
         </li>
         <li class="nav-item">
             <button type="button" class="btn btn-secondary" (click)="compile()">Compile</button>
@@ -84,9 +87,24 @@
   </mat-tab-group>    
 </div>
 
+<!-- GRAPHVIZ -->
+<div class="report">
+  <mat-tab-group mat-align-tabs="start" [backgroundColor]="''" [color]="'warn'">
+    <mat-tab color="red" label="AST">
+      <div id = "graphAST"> 
+      </div>
+    </mat-tab>
+    <mat-tab label="Tabla">
+      <div id = "graphTab"> 
+      </div>
+    </mat-tab>
+    <mat-tab label="Errores">
+      <div id = "graphErr"> 
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
 <!-- FILECHOOSER -->
 <input type="file" #open (change)="openFile($event)" style="display: none"/>
 
-<!-- GRAPHVIZ -->
-<div id = "graph"> 
-</div>

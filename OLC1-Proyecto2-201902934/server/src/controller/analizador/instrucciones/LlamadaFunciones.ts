@@ -34,21 +34,33 @@ export default class LlamadaFunciones extends Instruccion {
             }
             var parametrosFun = funcion.getValue().parametros;
             var instrucciones = funcion.getValue().instrucciones;
-            if (this.parametros.length == parametrosFun.length) {
-
-
+            if (this.parametros.length == parametrosFun.length) {    
+                //Todo bien            
             } else {
                 return new Excepcion("Semántico", "Numero de parametros incorrecto", this.line, this.column);
             }
 
             var tabla = new tablaSimbolos(table);
+            var entorno = this.id.split("2776871601601");
+            tabla.setEntorno(entorno[0])
+            ast.addTabla(tabla);
 
             for (var i = 0; i < this.parametros.length; i++) {
-                var valor = this.parametros[i].interpretar(ast, tabla);
-                var sim = new Simbolo(new Tipo(parametrosFun[i].getTipo()), parametrosFun[i].getID(), valor.value);
+                var valor = this.parametros[i].interpretar(ast, table);
+                if (valor instanceof Excepcion) return valor;
+                if(valor.tipo.getTipo() != parametrosFun[i].getTipo()){
+                    return new Excepcion("Semántico", "Tipo de parametros incorrecto", this.line, this.column);
+                }
+                var sim = new Simbolo(this.line, this.column, new Tipo(parametrosFun[i].getTipo()), parametrosFun[i].getID(), valor.value);
                 tabla.setVariable(sim);
             }
             for (let m of instrucciones) {
+                if (m instanceof Excepcion) { // ERRORES SINTACTICOS
+                    //Errors.push(m);
+                    ast.updateConsola((<Excepcion>m).toString());
+                    ast.addError(m);
+                    continue;
+                }
                 var result = m.interpretar(ast, tabla);
                 if (result instanceof Excepcion) { // ERRORES SINTACTICOS
                     ast.updateConsola((<Excepcion>result).toString());
@@ -56,6 +68,7 @@ export default class LlamadaFunciones extends Instruccion {
                 if (!metodo) {
                     if (result instanceof Return) {
                         retono = true;
+                        ast.addError(new Excepcion("Semántico", "Tipo de retorno invalido", this.line, this.column));
                         return new Excepcion("Semántico", "Tipo de retorno invalido", this.line, this.column);
                     }
                     if (result instanceof Primitivo) {
@@ -63,6 +76,7 @@ export default class LlamadaFunciones extends Instruccion {
                         if (funcion.getValue().tipo.getTipo() == result.tipo.getTipo()) {
                             return result;
                         } else {
+                            ast.addError(new Excepcion("Semántico", "Tipo de retorno invalido", this.line, this.column));
                             return new Excepcion("Semántico", "Tipo de retorno invalido", this.line, this.column);
                         }
                     }
@@ -87,37 +101,10 @@ export default class LlamadaFunciones extends Instruccion {
         }
     }
 
-    public comparaTipos(tree: Arbol, table: tablaSimbolos, lista1: any, lista2: any) {
-        var iguales = true;
-        for (var i = 0; i < lista1.length; i++) {
-            try {
-                var variable = table.getVariable(lista1[i].id);
-                if (variable) {
-                    if (variable.getTipo().getTipo() != lista2[i].getTipo()) {
-                        iguales = false;
-                        break;
-                    }
-                } else {
-                    return false;
-                }
-            } catch {
-                if (lista1[i].tipo.getTipo() != lista2[i].getTipo()) {
-                    iguales = false;
-                    break;
-                }
-            }
-        }
-        if (iguales) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public getNodo(): nodoAST {
         let nodo: nodoAST = new nodoAST("Llamada");
         let temp = this.id.split("2776871601601");
-        nodo.addHijo(temp[0] + "\n" + "2776871601601");
+        nodo.addHijo(temp[0]);
         nodo.addHijo("(");
         if (this.parametros.length != 0) {
             for (let i of this.parametros) {

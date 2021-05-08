@@ -24,6 +24,7 @@ export default class ModificarVector extends Instruccion {
         posicion = this.express1?.interpretar(tree, table);
         if (posicion instanceof Excepcion) return posicion;
         if (posicion.tipo.getTipo() != tipos.ENTERO) {
+            tree.addError(new Excepcion("Semántico", "Posicion de vector invalido", this.line, this.column));
             return new Excepcion("Semántico", "Posicion de vector invalido", this.line, this.column);
         }
         valor = this.express2?.interpretar(tree, table);
@@ -31,15 +32,21 @@ export default class ModificarVector extends Instruccion {
         vector = table.getVariable(this.id);
         if(vector){
             if(vector.getTipoVec()?.getTipo() == tipos.LISTA){
+                tree.addError(new Excepcion("Semántico", "Vector no declarado", this.line, this.column));
                 return new Excepcion("Semántico", "Vector no declarado", this.line, this.column);
             }
             if(valor.tipo.getTipo() != vector.getTipo().getTipo()){
+                tree.addError(new Excepcion("Semántico", "Tipo de valor incorrecto", this.line, this.column));
                 return new Excepcion("Semántico", "Tipo de valor incorrecto", this.line, this.column);
             }
             let temp = vector.getValue()
+            if (temp[parseInt(posicion.value)] == undefined){
+                return new Excepcion("Semántico", "Posicion de vector invalido", this.line, this.column);
+            }
             temp[parseInt(posicion.value)] = valor.value;
         }else{
-            return new Excepcion("Semántico", "Vector no declarado", this.line, this.column);
+                tree.addError(new Excepcion("Semántico", "Vector no declarado", this.line, this.column));
+                return new Excepcion("Semántico", "Vector no declarado", this.line, this.column);
         }
     }
 

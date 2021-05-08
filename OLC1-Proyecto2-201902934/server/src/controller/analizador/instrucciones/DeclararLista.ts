@@ -22,13 +22,15 @@ export default class DeclararLista extends Instruccion {
 
     public interpretar(tree: Arbol, table: tablaSimbolos) {
         if(this.tipo1 != this.tipo2){
+            tree.addError(new Excepcion("Semántico", "No concuerdan los tipos", this.line, this.column));
             return new Excepcion("Semántico", "No concuerdan los tipos", this.line, this.column);
         }
         if (table.getVariable(this.id)) {
+            tree.addError(new Excepcion("Semántico", "ID utilizado en otra declaracion", this.line, this.column));
             return new Excepcion("Semántico", "ID utilizado en otra declaracion", this.line, this.column);
         }
         let lista = new Array();
-        var sim = new Simbolo(new Tipo(this.tipo1), this.id, lista, new Tipo(tipos.LISTA));
+        var sim = new Simbolo(this.line, this.column, new Tipo(this.tipo1), this.id, lista, new Tipo(tipos.LISTA));
         table.setVariable(sim);
     }
 

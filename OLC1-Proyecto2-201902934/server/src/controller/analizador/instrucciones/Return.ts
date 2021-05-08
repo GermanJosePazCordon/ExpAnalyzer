@@ -18,8 +18,6 @@ export default class Return extends Instruccion {
     }
 
     public interpretar(tree: Arbol, table: tablaSimbolos) {
-        //console.log(this.express);
-        //stop
         if(this.express){
             return this.express.interpretar(tree, table);
         }else{

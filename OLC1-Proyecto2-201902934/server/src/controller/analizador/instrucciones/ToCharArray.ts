@@ -23,19 +23,22 @@ export default class ToCharArray extends Instruccion {
     public interpretar(tree: Arbol, table: tablaSimbolos) {
         var valor = null;
         if(this.type != tipos.CARACTER){
+            tree.addError(new Excepcion("Semántico", "Tipo de valor no valido para toCharArray", this.line, this.column));
             return new Excepcion("Semántico", "Tipo de valor no valido para toCharArray", this.line, this.column);
         }
         if (table.getVariable(this.id)) {
+            tree.addError(new Excepcion("Semántico", "ID utilizado en otra declaracion", this.line, this.column));
             return new Excepcion("Semántico", "ID utilizado en otra declaracion", this.line, this.column);
         }
         valor = this.express?.interpretar(tree, table);
         if (valor instanceof Excepcion) return valor;
         if (valor.tipo.getTipo() != tipos.CADENA) {
+            tree.addError(new Excepcion("Semántico", "Tipo de valor no valido para toCharArray", this.line, this.column));
             return new Excepcion("Semántico", "Tipo de valor no valido para toCharArray", this.line, this.column);
         }
         let lista = new Array();
         lista = Array.from(valor.value);
-        var sim = new Simbolo(new Tipo(tipos.CARACTER), this.id, lista, new Tipo(tipos.LISTA));
+        var sim = new Simbolo(this.line, this.column, new Tipo(tipos.CARACTER), this.id, lista, new Tipo(tipos.LISTA));
         table.setVariable(sim);
     }
 

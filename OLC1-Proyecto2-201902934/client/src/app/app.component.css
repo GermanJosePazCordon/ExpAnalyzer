@@ -8,7 +8,7 @@
 
 .btn{
     padding: auto;
-    margin-left: 150px;
+    margin-left: 130px;
 }
 
 .titulo{
@@ -54,9 +54,19 @@
     margin-left: 1%;    
 }
 
-#graph{
+.report{
     top: 65%;
     position: absolute;
+    align-items: center;
+    margin: auto;
+    width: 97%;
+    margin-left: 1%;
+    background-color: #060606;
+}
+
+#graphAST, #graphTab, #graphErr{
+
+    position: relative;
     align-items: center;
     margin: auto;
     width: 100%;

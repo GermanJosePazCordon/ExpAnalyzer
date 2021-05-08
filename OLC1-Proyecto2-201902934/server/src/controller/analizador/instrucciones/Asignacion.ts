@@ -31,19 +31,21 @@ export default class Asignacion extends Instruccion{
                     if(valor.tipo.getTipo() == tipos.ENTERO || valor.tipo.getTipo() == tipos.DECIMAL){
                         variables.setValue(valor.value);
                     }else{
-                        
+                        tree.addError(new Excepcion("Semántico", "Tipos incompatibles", this.line, this.column));
                         return new Excepcion("Semántico","Tipos incompatibles",this.line,this.column);
                     }
                 }else{
                     if(variables.getTipo().getTipo() == valor.tipo.getTipo()){
                         variables.setValue(valor.value);
                     }else{
+                        tree.addError(new Excepcion("Semántico", "Tipos incompatibles", this.line, this.column));
                         return new Excepcion("Semántico","Tipos incompatibles",this.line,this.column);
                     }
                 }
             }
         }
         else{
+            tree.addError(new Excepcion("Semántico", "No existe la varible", this.line, this.column));
             return new Excepcion("Semántico","No existe la varible",this.line,this.column);
         }
     }

@@ -6,8 +6,12 @@ export default class Simbolo{
     private id : String;
     private value : any;
     private tipoVec? : Tipo;
+    private line : Number;
+    private column : Number;
 
-    constructor(tipo : Tipo, id : String, value? : any, tipoVec? : Tipo){
+    constructor(line : Number, column : Number, tipo : Tipo, id : String, value? : any, tipoVec? : Tipo){
+        this.line = line;
+        this.column = column;
         this.tipo = tipo;
         this.id = id;
         if(value){
@@ -44,6 +48,14 @@ export default class Simbolo{
 
     public getTipoVec(){
         return this.tipoVec;
+    }
+
+    public getLine(){
+        return this.line;
+    }
+
+    public getColumn(){
+        return this.column;
     }
     
 }

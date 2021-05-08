@@ -27,14 +27,16 @@ export default class Nativas extends Instruccion {
                 if (valor.tipo.getTipo() == tipos.CADENA) {
                     return new Primitivo(valor.tipo, valor.value.toLowerCase(), this.line, this.column);
                 } else {
-                    return new Excepcion("Semántico", "Tipo de expresion invalido para toLower", this.line, this.column);
+                tree.addError(new Excepcion("Semántico", "Tipo de expresion invalido para toLower", this.line, this.column));
+                return new Excepcion("Semántico", "Tipo de expresion invalido para toLower", this.line, this.column);
                 }
                 break;
             case OperadorNativas.TOUPPER:
                 if (valor.tipo.getTipo() == tipos.CADENA) {
                     return new Primitivo(valor.tipo, valor.value.toUpperCase(), this.line, this.column);
                 } else {
-                    return new Excepcion("Semántico", "Tipo de expresion invalido para toUpper", this.line, this.column);
+                tree.addError(new Excepcion("Semántico", "Tipo de expresion invalido para toUpper", this.line, this.column));
+                return new Excepcion("Semántico", "Tipo de expresion invalido para toUpper", this.line, this.column);
                 }
                 break;
             case OperadorNativas.LENGTH:
@@ -50,12 +52,15 @@ export default class Nativas extends Instruccion {
                             } else if (t?.getTipo() == tipos.LISTA) {
                                 return new Primitivo(new Tipo(tipos.ENTERO), vector.getValue().length, this.line, this.column);
                             } else {
+                                tree.addError(new Excepcion("Semántico", "Tipo de valor invalido para length", this.line, this.column));
                                 return new Excepcion("Semántico", "Tipo de valor invalido para length", this.line, this.column);
                             }
                         } else {
+                            tree.addError(new Excepcion("Semántico", "Estructura no existente", this.line, this.column));
                             return new Excepcion("Semántico", "Estructura no existente", this.line, this.column);
                         }
                     } else {
+                        tree.addError(new Excepcion("Semántico", "Tipo de valor invalido para length", this.line, this.column));
                         return new Excepcion("Semántico", "Tipo de valor invalido para length", this.line, this.column);
                     }
                 }
@@ -66,6 +71,7 @@ export default class Nativas extends Instruccion {
                 } else if (valor.tipo.getTipo() == tipos.DECIMAL) {
                     return new Primitivo(new Tipo(tipos.ENTERO), Math.trunc(valor.value), this.line, this.column);
                 } else {
+                    tree.addError(new Excepcion("Semántico", "Tipo de valor invalido para truncate", this.line, this.column));
                     return new Excepcion("Semántico", "Tipo de valor invalido para truncate", this.line, this.column);
                 }
                 break;
@@ -75,6 +81,7 @@ export default class Nativas extends Instruccion {
                 } else if (valor.tipo.getTipo() == tipos.DECIMAL) {
                     return new Primitivo(new Tipo(tipos.ENTERO), Math.round(valor.value), this.line, this.column);
                 } else {
+                    tree.addError(new Excepcion("Semántico", "Tipo de valor invalido para truncate", this.line, this.column));
                     return new Excepcion("Semántico", "Tipo de valor invalido para truncate", this.line, this.column);
                 }
                 break;
@@ -101,6 +108,7 @@ export default class Nativas extends Instruccion {
                 } else if (valor.tipo.getTipo() == tipos.CADENA) {
                     return new Primitivo(new Tipo(tipos.CADENA), "string", this.line, this.column);
                 } else {
+                    tree.addError(new Excepcion("Semántico", "Tipo de valor invalido para typeof", this.line, this.column));
                     return new Excepcion("Semántico", "Tipo de valor no valido para typeof", this.line, this.column);
                 }
                 break;
@@ -111,12 +119,16 @@ export default class Nativas extends Instruccion {
                     return new Primitivo(new Tipo(tipos.CADENA), valor.value.toString(), this.line, this.column);
                 } else if (valor.tipo.getTipo() == tipos.BOOLEAN) {
                     return new Primitivo(new Tipo(tipos.CADENA), valor.value.toString(), this.line, this.column);
-                } else {
+                } else if(valor.tipo.getTipo() == tipos.CARACTER){
+                    return new Primitivo(new Tipo(tipos.CADENA), valor.value.toString(), this.line, this.column);
+                }else {
+                    tree.addError(new Excepcion("Semántico", "Tipo de valor invalido para toString", this.line, this.column));
                     return new Excepcion("Semántico", "Tipo de valor no valido para toString", this.line, this.column);
                 }
                 break;
             default:
-                return new Excepcion("Semántico", "Tipo de funcion no valido", this.line, this.column);
+                    tree.addError(new Excepcion("Semántico", "Tipo de funcion no valido", this.line, this.column));
+                    return new Excepcion("Semántico", "Tipo de funcion no valido", this.line, this.column);
         }
     }
 
