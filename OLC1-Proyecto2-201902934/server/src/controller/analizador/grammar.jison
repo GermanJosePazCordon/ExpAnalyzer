@@ -142,7 +142,6 @@
     const Llamada = require('./instrucciones/LlamadaFunciones');
     const Continue = require('./instrucciones/Continue');
     const Metodos = require('./instrucciones/Metodos');
-    const LlamadaMet = require('./instrucciones/LlamadaMetodos');
     const Nativas = require('./instrucciones/Nativas');
     const Ternario = require('./instrucciones/Ternario');
     const DVector = require('./instrucciones/DeclararVector');
@@ -211,7 +210,6 @@ INSTRUCCION
     | FUNCIONES             { $$ = $1; }
     | METODOS               { $$ = $1; }
     | LLAMADA               { $$ = $1; }
-    | LLAMADAMet            { $$ = $1; }
     | DECLARARVECTOR        { $$ = $1; }
     | MODIFICARVECTOR       { $$ = $1; }
     | DLISTA                { $$ = $1; }
