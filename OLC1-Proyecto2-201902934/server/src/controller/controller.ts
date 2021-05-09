@@ -3,6 +3,8 @@ import { Instruccion } from './analizador/abstract/Instruccion';
 import { nodoAST } from './analizador/abstract/NodoAST';
 import Excepcion from './analizador/exception/Exception';
 import Asignacion from './analizador/instrucciones/Asignacion';
+import Break from './analizador/instrucciones/Break';
+import Continue from './analizador/instrucciones/Continue';
 import Declaracion from './analizador/instrucciones/Declaracion';
 import DeclararLista from './analizador/instrucciones/DeclararLista';
 import DeclararVector from './analizador/instrucciones/DeclararVector';
@@ -41,7 +43,7 @@ class controller {
                     continue;
                 }
                 else {
-                    if(m instanceof Funciones || m instanceof Metodos){
+                    if(m instanceof Funciones || m instanceof Metodos || m instanceof Declaracion|| m instanceof Asignacion || m instanceof DeclararLista || m instanceof DeclararVector || m instanceof ToCharArray){
                         var result = m.interpretar(ast, tabla);
                         if (result instanceof Excepcion) { // ERRORES SINTACTICOS
                             Errors.push(result);
@@ -70,15 +72,8 @@ class controller {
                         continue;
                     }
                     else {
-                        if(m instanceof Funciones || m instanceof Metodos){
-                            //Funciones variables y declaracion ya almacenadas
-                        }else if(m instanceof Declaracion|| m instanceof Asignacion || m instanceof DeclararLista || m instanceof DeclararVector || m instanceof ToCharArray){
-                            let result = m.interpretar(ast, tabla);
-                            //console.log(result);
-                            if (result instanceof Excepcion) { // ERRORES SINTACTICOS
-                                Errors.push(result);
-                                ast.updateConsola((<Excepcion>result).toString());
-                            }
+                        if(m instanceof Funciones || m instanceof Metodos || m instanceof Declaracion|| m instanceof Asignacion || m instanceof DeclararLista || m instanceof DeclararVector || m instanceof ToCharArray){
+                            //Funciones variables y declaracion ya almacenada
                         }else{
                             if(m instanceof Exec){
                                 var resultt = m.interpretar(ast, tabla);
@@ -86,6 +81,14 @@ class controller {
                                         Errors.push(resultt);
                                         ast.updateConsola((<Excepcion>resultt).toString());
                                     }
+                            }else if(m instanceof Break){
+                                let err =  new Excepcion("Semántico", "Break fuera de un ciclo", m.line, m.column);
+                                Errors.push(err);
+                                ast.updateConsola((<Excepcion>err).toString());
+                            }else if(m instanceof Continue){
+                                let err =  new Excepcion("Semántico", "Continue fuera de un ciclo", m.line, m.column);
+                                Errors.push(err);
+                                ast.updateConsola((<Excepcion>err).toString());
                             }else{
                                 let err =  new Excepcion("Semántico", "Instrucciones fuera del exec", m.line, m.column);
                                 Errors.push(err);
@@ -220,8 +223,8 @@ function getDotErr(ast : Arbol){
     grafoErr = "";
     grafoErr += "digraph {\n";//                         "     \"
     grafoErr += "bgcolor=" + '"' + "#060606" + '"';
-    grafoErr += "\nnode [fontcolor=" + '"' + "#d0800d" + '"' + ", color=white, fontname=" + '"' + "Segoe UI" + '"' + "];\n"
-    grafoErr += '"nombre"[fontsize=50, margin=0, color=white, label=<\n'
+    grafoErr += "\nnode [shape=oval, fontcolor=" + '"' + "#d0800d" + '"' + ", style=none, color=white, fontname=" + '"' + "Segoe UI" + '"' + "];\n"
+    grafoErr += '"nombre"[shape=none, fontsize=50, margin=0, color=white, label=<\n'
     grafoErr += '<TABLE border="0" cellborder="4" cellspacing="10" cellpadding="30">\n';
     grafoErr += recorrerErr(ast);
     grafoErr += '</TABLE>\n';

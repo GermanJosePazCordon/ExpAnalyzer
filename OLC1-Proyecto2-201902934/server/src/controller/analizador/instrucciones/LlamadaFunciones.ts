@@ -16,6 +16,8 @@ export default class LlamadaFunciones extends Instruccion {
 
     constructor(line: Number, column: Number, id: String, parametros?: Array<Instruccion>) {
         super(new Tipo(tipos.CADENA), line, column,);
+        this.line = line;
+        this.column = column;
         this.id = id.toLowerCase() + "2776871601601";
         if (parametros) {
             this.parametros = parametros;
@@ -49,6 +51,7 @@ export default class LlamadaFunciones extends Instruccion {
                 var valor = this.parametros[i].interpretar(ast, table);
                 if (valor instanceof Excepcion) return valor;
                 if(valor.tipo.getTipo() != parametrosFun[i].getTipo()){
+                    ast.addError(new Excepcion("Semántico", "Tipo de parametros incorrecto", this.line, this.column));
                     return new Excepcion("Semántico", "Tipo de parametros incorrecto", this.line, this.column);
                 }
                 var sim = new Simbolo(this.line, this.column, new Tipo(parametrosFun[i].getTipo()), parametrosFun[i].getID(), valor.value);
